@@ -1,0 +1,341 @@
+{
+  "description": "中华美食短视频女主永久档案库。每位女主拥有独一无二的性格、说话音色、语言表达风格与适配美食。单条视频选定一位女主后，全片8个分镜从头到尾必须100%统一使用该女主，绝不中途换人。",
+  "characters": [
+    {
+      "character_id": "shen_zhao_yujie",
+      "name": "沈昭",
+      "photo_path": "assets/character_master/shen_zhao_master.jpg",
+      "style_label": "高冷老饕御姐风",
+      "visual_traits": "20岁，冷白皮，身材高挑172cm超模比例，修长大长腿，精致下颌线，微挑猫眼，右眼角下方带有一颗标志性微小精致泪痣，高扎利落黑马尾，身穿黑色高开叉修身针织裙配黑色皮质短靴，银色蛇骨锁骨链，清冷高级伪素颜妆容。",
+      "personality": "高冷飒爽、外冷内热、懂行挑剔、极度自信、对美食毫不妥协。外表高高在上，尝到极致美味的一瞬间眼神瞬间放大融化，反差萌极强。",
+      "voice_persona": {
+        "voice_name": "zh-CN-XiaoxiaoNeural",
+        "style": "cheerful",
+        "pitch": "+0Hz",
+        "rate": "+10%",
+        "tone_description": "磁性微哑御姐原声，咬字干脆利落，短句多，带着戏谑笑意与挑衅感，断句果断有锋芒。"
+      },
+      "expression_style": "毒舌犀利、一针见血、老饕黑话张口就来。口癖与句式：'这不是精致，是凶'、'看着最不起眼，下手往往最狠'、'第一口直接把我吃沉默了'。",
+      "best_match_cuisines": [
+        "重庆老火锅",
+        "重庆小面",
+        "柳州螺蛳粉",
+        "武汉热干面",
+        "自贡冷吃兔",
+        "江湖重辣菜"
+      ]
+    },
+    {
+      "character_id": "lin_chuwei_sweet",
+      "name": "林初薇",
+      "photo_path": "assets/character_master/girl_sweet_firstlove_1789282949220.jpg",
+      "style_label": "清纯初恋邻家风",
+      "visual_traits": "20岁，粉白透亮皮肤，水灵灵的无辜杏仁大眼带卧蚕，元气饱满苹果肌，自然微卷空气刘海双低马尾，身穿软糯米白大开衫配粉色百褶短裙与白袜小白鞋，双腿纤细匀称，笑容极具治愈感染力。",
+      "personality": "软萌元气、热爱生活、像隔壁班最漂亮的校花、对甜品与市井小吃毫无抵抗力，吃东西时两腮鼓鼓像小松鼠，纯真天然。",
+      "voice_persona": {
+        "voice_name": "zh-CN-XiaoyiNeural",
+        "style": "cheerful",
+        "pitch": "+5Hz",
+        "rate": "+8%",
+        "tone_description": "清脆甜美、轻快明亮、元气满满的少女母语声线，尾音自然上翘，自带天然亲和力。"
+      },
+      "expression_style": "充满好奇与惊喜，用最具代入感的情绪夸赞食物。口癖与句式：'天呐这一口也太幸福了吧！'、'谁能拒绝清晨这一碗热气腾腾的小确幸？'、'好吃到我想原地转圈圈！'。",
+      "best_match_cuisines": [
+        "老北京冰糖葫芦",
+        "江南定胜糕",
+        "顺德双皮奶",
+        "广式蛋挞甜品",
+        "扬州早茶点心",
+        "鲜肉小笼包"
+      ]
+    },
+    {
+      "character_id": "su_wanqing_guofeng",
+      "name": "苏婉清",
+      "photo_path": "assets/character_master/girl_guofeng_beauty_1789285173133.jpg",
+      "style_label": "新中式国风古典风",
+      "visual_traits": "20岁，温润冷白皮，远山秋水眉，优雅丹凤眼，传统低挽发髻别雅致银花簪，身穿淡竹青提花真丝高开叉旗袍配浅裸色细高跟鞋，天鹅颈，步态轻盈端庄，长腿线条曼妙修长，江南水乡温婉气韵。",
+      "personality": "温婉恬静、知书达礼、深谙传统饮食文化与烹饪美学，骨子里透着文人的雅致与从容，慢条斯理中见真章。",
+      "voice_persona": {
+        "voice_name": "zh-CN-XiaoxiaoNeural",
+        "style": "poetry",
+        "pitch": "-2Hz",
+        "rate": "-5%",
+        "tone_description": "轻柔似水、吐字极具韵律美感、气息包裹感强的国风才女声线，语速温和从容，字正腔圆。"
+      },
+      "expression_style": "出口成章，擅长用充满诗意的语言解构食材时令与匠人火候。口癖与句式：'这不是吃一顿饭，是在舌尖上品读一首婉约词'、'不时不食，顺应天时的一口至味'、'心急尝不出真味，江南的灵气全藏在这汪滚烫里'。",
+      "best_match_cuisines": [
+        "苏式蟹粉小笼",
+        "西湖醋鱼",
+        "扬州三套鸭",
+        "龙井虾仁",
+        "绍兴醉蟹",
+        "泉水松茸鸡汤"
+      ]
+    },
+    {
+      "character_id": "zhou_minyi_hongkong",
+      "name": "周敏仪",
+      "photo_path": "assets/character_master/girl_hongkong_retro_1789283316432.jpg",
+      "style_label": "90年代港风复古明艳风",
+      "visual_traits": "20岁，浓颜系骨相，浓密蓬松的黑色大波浪长卷发，野生浓眉，复古哑光正红唇，冷白皮，身穿复古正红色高开叉真丝吊带长裙配黑色细带高跟鞋与复古金属大耳环，身材曼妙高挑，气场全开。",
+      "personality": "慵懒风情、霸气独立、吃遍大排档与老字号的港岛千金，眼神深邃微醺，既能优雅端坐高级酒楼，也能在大排档大快朵颐。",
+      "voice_persona": {
+        "voice_name": "zh-CN-XiaoyiNeural",
+        "style": "gentle",
+        "pitch": "-3Hz",
+        "rate": "+0%",
+        "tone_description": "微醺慵懒、音调微低带磁性、老钱大女主质感声线，尾音轻挑带着从容与傲娇。"
+      },
+      "expression_style": "带着王家卫电影般的叙事调性与老饕的挑剔。口癖与句式：'第一口是海风，第二口是刀刃，第三口你就彻底回不去了'、'敢在深夜跟我吃这个的，都是自己人'、'镬气够不够，舌头一碰便知分晓'。",
+      "best_match_cuisines": [
+        "潮汕生腌膏蟹",
+        "避风塘炒蟹",
+        "广式深井烧鹅",
+        "顺德鱼生",
+        "生滚牛肉粥",
+        "老式煲仔饭"
+      ]
+    },
+    {
+      "character_id": "song_xiaoyun_literary",
+      "name": "宋晓芸",
+      "photo_path": "assets/character_master/girl_literary_gentle_1789283538436.jpg",
+      "style_label": "知性书卷温婉风",
+      "visual_traits": "20岁，清透水嫩皮肤，柔和含笑的双眸，细金丝圆框眼镜，松散慵懒的低丸子头，身穿宽松燕麦棉麻浅色衬衫配墨绿百褶棉麻长裙与深棕色乐福鞋，书卷气浓郁，文艺松弛。",
+      "personality": "内敛从容、温柔治愈、喜欢探寻食物背后的人情冷暖与市井故事，像一位博学温和的知己闺蜜。",
+      "voice_persona": {
+        "voice_name": "zh-CN-YunyangNeural",
+        "style": "calm",
+        "pitch": "+0Hz",
+        "rate": "+2%",
+        "tone_description": "温润如玉、抚慰人心的电台质感女声，语调沉稳自然，呼吸感适中，极具倾听欲。"
+      },
+      "expression_style": "娓娓道来，重在情感共鸣与风土人情。口癖与句式：'有些味道你记不住配方，却能在异乡的深夜记好多年'、'人间烟火气，最抚凡人心'、'黄河水煮出来的面，骨子里自带一股韧劲'。",
+      "best_match_cuisines": [
+        "兰州牛肉拉面",
+        "陕西羊肉泡馍",
+        "瓦罐煨汤",
+        "手作豆腐煲",
+        "阳春面",
+        "老北京打卤面"
+      ]
+    },
+    {
+      "character_id": "chen_keke_cat",
+      "name": "陈可可",
+      "photo_path": "assets/character_master/girl_playful_cat_1789284992565.jpg",
+      "style_label": "灵动猫系千金名媛风",
+      "visual_traits": "20岁，饱满心形幼态脸，微挑娇憨猫眼，水润嘟嘟唇，白瓷透光肌，毛茸茸黑棕色微卷发扎着俏皮双半丸子头，身穿浅粉色小香风粗花呢短外套配高腰百褶短裙与黑色玛丽珍鞋，修长纤细双腿，贵气灵动。",
+      "personality": "娇憨傲娇、嘴硬心软、挑食但极懂顶级品质，被好吃的美食征服后会立刻露出又惊又喜的小猫本性。",
+      "voice_persona": {
+        "voice_name": "zh-CN-XiaoxiaoNeural",
+        "style": "cheerful",
+        "pitch": "+4Hz",
+        "rate": "+6%",
+        "tone_description": "娇俏轻快、略带一点撒娇与傲娇气息的千金少女声线，语气鲜活跳跃。"
+      },
+      "expression_style": "先挑刺后彻底沦陷，反差喜感极强。口癖与句式：'我原本以为平平无奇，结果第一口直接把我香糊涂了'、'老板要是不给我加料，我今天可赖着不走了'、'别看它长得乖巧，吃进嘴里简直不讲道理'。",
+      "best_match_cuisines": [
+        "潮汕生腌皮皮虾",
+        "清蒸大闸蟹",
+        "金汤花胶鸡",
+        "鲍汁煨花菇",
+        "精致果木烤鸭",
+        "法式红酒牛肉"
+      ]
+    },
+    {
+      "character_id": "zhao_ziqing_spicy",
+      "name": "赵子晴",
+      "photo_path": "assets/character_master/girl_sichuan_spicy_1789284409933.jpg",
+      "style_label": "川渝江湖元气小辣椒",
+      "visual_traits": "20岁，白里透红的健康透亮皮肤，灵动狡黠的大眼睛，笑起来带迷人梨涡与虎牙，随性高扎丸子头碎发飞扬，身穿火红短T恤配高腰破洞牛仔超短裤与红白帆布鞋，紧实笔直大长腿，活力爆棚。",
+      "personality": "豪爽开朗、耿直泼辣、自来熟、市井气十足，坐在塑料矮凳上烫火锅手速飞快，江湖气满满。",
+      "voice_persona": {
+        "voice_name": "zh-CN-XiaoxiaoNeural",
+        "style": "cheerful",
+        "pitch": "+2Hz",
+        "rate": "+15%",
+        "tone_description": "干脆利索、节奏欢快如同炒豆子、充满川妹子热辣感染力的地道声线，语速飞快但字字清脆。"
+      },
+      "expression_style": "直白火辣、通透接地气、大开大合。口癖与句式：'在重庆吃微辣是对老板最大的不尊重'、'七上八下刚刚好，这口毛肚脆得在嘴里弹钢琴'、'少废话，老板再来两份老肉片！'。",
+      "best_match_cuisines": [
+        "老成都串串香",
+        "自贡冷吃牛肉",
+        "乐山钵钵鸡",
+        "宜宾燃面",
+        "重庆九宫格鲜毛肚",
+        "富顺豆花饭"
+      ]
+    },
+    {
+      "character_id": "jiang_li_sporty",
+      "name": "姜黎",
+      "photo_path": "assets/character_master/girl_sporty_street_1789283379567.jpg",
+      "style_label": "阳光街头酷飒辣妹风",
+      "visual_traits": "20岁，阳光健康微光泽冷白皮，高束运动编发马尾，灵动自信目光，清晰紧致马甲线，身穿白色运动挂脖短背心配军绿色高腰工装长裤与复古运动鞋，身材健美高挑，长腿线条力量感十足。",
+      "personality": "直率飒爽、阳光开朗、热爱大排档和路边摊的硬核食客，大口吃肉大口喝酒，毫不扭捏做作。",
+      "voice_persona": {
+        "voice_name": "zh-CN-XiaoyiNeural",
+        "style": "cheerful",
+        "pitch": "+0Hz",
+        "rate": "+10%",
+        "tone_description": "清亮干脆、中气十足、带着自信灿烂笑意的阳光女声，听着就让人食欲大开。"
+      },
+      "expression_style": "痛快爽快、直击灵魂、肉食主义。口癖与句式：'大口吃肉才是成年人最顶级的快乐'、'这焦香肉汁在嘴里爆开的一瞬间，什么疲惫都没了'、'宵夜江湖里，它就是绝对的无冕之王'。",
+      "best_match_cuisines": [
+        "东北炭火烤肉",
+        "新疆红柳大羊肉串",
+        "铁板大鱿鱼",
+        "东北锅包肉",
+        "西安肉夹馍",
+        "烤生蚝"
+      ]
+    },
+    {
+      "character_id": "xia_qinghe_mori",
+      "name": "夏青禾",
+      "photo_path": "assets/character_master/girl_mori_oxygen_1789284502852.jpg",
+      "style_label": "森系日杂清透氧气风",
+      "visual_traits": "20岁，白皙近乎透明的发光肌肤，清澈纯净小鹿眼，微卷蓬松栗色碎发，身穿宽松浅燕麦色粗线毛衣外搭白色碎花棉麻长裙与复古小皮靴，体态轻盈柔美，宛如晨雾中走出的林间仙子。",
+      "personality": "纯净出尘、安静平和、对食材本原的味道极其敏感，能够捕捉最细微的甘甜与温度，抚慰人心。",
+      "voice_persona": {
+        "voice_name": "zh-CN-XiaoxiaoNeural",
+        "style": "gentle",
+        "pitch": "+1Hz",
+        "rate": "-3%",
+        "tone_description": "空灵轻柔、带气声的纯净治愈系声线，仿佛在耳边轻声细语分享一口温热。"
+      },
+      "expression_style": "感官细腻、温暖抚慰、重在体悟。口癖与句式：'清晨的第一缕白雾升起时，舌尖已经等不及了'、'最质朴的味道，往往藏着最深沉的深情'、'一口热汤咽下去，整个人都被融化了'。",
+      "best_match_cuisines": [
+        "清晨手磨豆浆油条",
+        "手工老汤馄饨",
+        "手擀鸡汤面",
+        "云南野生菌菇汽锅鸡",
+        "老北京铜锅清汤肉",
+        "高山笋干土鸡汤"
+      ]
+    },
+    {
+      "character_id": "lu_xiaoxiao_cyber",
+      "name": "陆潇潇",
+      "photo_path": "assets/character_master/girl_cyber_guochao_1789284794883.jpg",
+      "style_label": "赛博国潮机能拽姐风",
+      "visual_traits": "20岁，轮廓立体分明的瓜子脸，冷酷微挑烟熏猫眼，暗紫色挑染黑色高马尾，身穿黑色战术机能短马甲叠穿紧身网纱与高腰工装百褶短裙，脚蹬及膝厚底系带战靴配网袜，身材修长高挑，冷艳拽酷。",
+      "personality": "特立独行、桀骜不驯、专挑最狠最重口的美食打卡，天不怕地不怕，眼神里全是老子天下第一的狂放。",
+      "voice_persona": {
+        "voice_name": "zh-CN-XiaoyiNeural",
+        "style": "cheerful",
+        "pitch": "-2Hz",
+        "rate": "+12%",
+        "tone_description": "冷酷利落、带颗粒质感与叛逆劲头的拽姐声线，轻笑中透着不服与挑衅。"
+      },
+      "expression_style": "狠辣直接、硬核机能、绝不废话。口癖与句式：'不够狠的东西别往我面前端'、'这股焦香直接往天灵盖上撞'、'听说没人敢吃？那我今天必须来会会它'。",
+      "best_match_cuisines": [
+        "深夜麻辣脑花",
+        "重口味酸辣牛蛙",
+        "变态辣鸡翅",
+        "武汉鸭脖鸭头",
+        "臭豆腐螺蛳粉加臭加辣",
+        "麻辣小龙虾"
+      ]
+    },
+    {
+      "character_id": "ye_weiwei_nightglam",
+      "name": "叶薇薇",
+      "photo_path": "assets/character_master/night_glam_portrait_1789284995394.jpg",
+      "style_label": "夜色微醺纯欲辣妹风",
+      "visual_traits": "20岁，冷白皮光泽诱人，精致锁骨与天鹅颈，乌黑微卷披肩发，身穿翡翠墨绿丝绸露肩挂脖吊带裙，配细高跟鞋，修长大长腿与曼妙比例，夜景灯火阑珊，纯欲撩人。",
+      "personality": "微醺迷人、优雅自信、懂吃懂喝的生活家，带有一丝小性感但谈起美食来专业犀利。",
+      "voice_persona": {
+        "voice_name": "zh-CN-XiaoyiNeural",
+        "style": "gentle",
+        "pitch": "-1Hz",
+        "rate": "+2%",
+        "tone_description": "微醺带感、温柔中暗藏锋芒的成熟声线，语速从容，充满夜色诱惑力。"
+      },
+      "expression_style": "慵懒撩人、品味卓绝。口癖与句式：'深夜的这口鲜甜，比酒精更容易让人上瘾'、'生活需要一点刺激，比如这一盘冰镇的狂欢'、'谁说夜宵只能果腹？它明明是在抚慰灵魂'。",
+      "best_match_cuisines": [
+        "潮汕冰镇生腌膏蟹",
+        "烤生蚝配蒜蓉",
+        "顺德醉鹅",
+        "深夜居酒屋炭火烤肉",
+        "辣炒田螺",
+        "港式避风塘大虾"
+      ]
+    },
+    {
+      "character_id": "zhong_xuening_luxury",
+      "name": "钟雪凝",
+      "photo_path": "assets/character_master/yujie_beauty_portrait_1789284889424.jpg",
+      "style_label": "奢雅黑裙名媛御姐风",
+      "visual_traits": "20岁，冷白皮，身材高挑173cm沙漏型超模曲线，黑色深V长袖修身及膝针织裙，佩戴简约钻石细锁骨链与单颗珍珠耳坠，一头乌黑顺直的长发自然垂落至胸前，五官立体明艳，神态高贵从容，手持精致黑色皮革晚宴包，尽显顶级私享名媛与高定餐厅主理人的优雅气场。",
+      "personality": "奢雅高贵、从容端庄、品味极致苛刻、深谙高端食材产地与烹饪火候，外表冷艳实则对地道绝味充满敬意。",
+      "voice_persona": {
+        "voice_name": "zh-CN-XiaomoNeural",
+        "style": "calm",
+        "pitch": "-2Hz",
+        "rate": "+2%",
+        "tone_description": "低沉微哑带有高贵磁性的名媛声线，咬字沉稳高雅，吐字不急不徐，充满奢雅私享质感。"
+      },
+      "expression_style": "行云流水的高阶品评、剖析食材细微矿物质感与油脂熟度。口癖与句式：\"这口熟成牛肉的焦化层，比米其林三星还要克制\"、\"好东西从来不需要多余的喧嚣\"、\"懂吃的人，眼里只有食材最纯粹的火候密码\"。",
+      "best_match_cuisines": [
+        "北京烤鸭",
+        "黑松露鲍鱼",
+        "佛跳墙",
+        "炭烤熟成和牛",
+        "顺德醉蟹",
+        "高端粤菜私房菜"
+      ]
+    },
+    {
+      "character_id": "ruan_qingxun_urban",
+      "name": "阮清寻",
+      "photo_path": "assets/character_master/sweet_beauty_portrait_1789284409225.jpg",
+      "style_label": "都市轻熟明朗探店风",
+      "visual_traits": "20岁，暖白皮透亮，169cm高挑匀称身材，浅米色细罗纹大圆领七分袖针织衫配深灰色高腰西装阔腿裤，单肩斜挎棕色小皮包，阳光下栗黑色半扎微卷发，眉眼弯弯笑容明媚灿烂，带有迷人的梨涡，自然干练又极具亲和力的都市独立女性探店博主形象。",
+      "personality": "明朗爽快、元气积极、极具感染力、喜欢穿梭在城市街头巷尾寻找最真实的人情味与烟火滋味。",
+      "voice_persona": {
+        "voice_name": "zh-CN-XiaoxiaoNeural",
+        "style": "friendly",
+        "pitch": "+2Hz",
+        "rate": "+8%",
+        "tone_description": "明媚通透、极富感染力与亲和力，带着都市探店博主的真实兴奋与爽快节奏。"
+      },
+      "expression_style": "阳光直接、共情力极强、生动活泼。口癖与句式：\"跟着老饕走绝不踩雷\"、\"这一口真的太扎实了\"、\"幸福感直接拉满，原地治愈打工人\"。",
+      "best_match_cuisines": [
+        "上海生煎包",
+        "南京鸭血粉丝汤",
+        "武汉热干面",
+        "西安肉夹馍",
+        "广式煲仔饭",
+        "街头排队老字号"
+      ]
+    },
+    {
+      "character_id": "li_wenyan_pureallure",
+      "name": "黎温言",
+      "photo_path": "assets/character_master/pure_allure_portrait_1789284977749.jpg",
+      "style_label": "极简纯欲私享名媛风",
+      "visual_traits": "20岁，细腻瓷白皮，170cm纤细曼妙身段，身穿香槟金极简真丝V领吊带长裙，慵懒蜷坐在落地窗边的浅色单人沙发椅上，自然黑褐色中长微卷发微拂肩头，五官清秀纯欲，眼神柔和清澈带有一丝慵懒迷离，晨光洒在光洁的锁骨与肩颈线条上，呈现出高级慵懒的私享品味。",
+      "personality": "慵懒随性、细腻敏感、追求极简纯粹的感官享受、注重食材本味与生活仪式感。",
+      "voice_persona": {
+        "voice_name": "zh-CN-XiaozhenNeural",
+        "style": "gentle",
+        "pitch": "-1Hz",
+        "rate": "-4%",
+        "tone_description": "轻柔慵懒带有一丝轻盈气声，语气慢条斯理，像在耳边私语，极具高级松弛感。"
+      },
+      "expression_style": "感官通感修辞、细腻私享表达。口癖与句式：\"这口清甜顺着喉咙滑下去，像夏夜的一阵晚风\"、\"不需要任何调味，本味就是最好的答案\"、\"有些鲜甜，只属于不被打扰的舌尖私享\"。",
+      "best_match_cuisines": [
+        "顺德鱼生",
+        "台州小海鲜",
+        "西湖龙井茶点",
+        "冰镇生腌红膏蟹",
+        "原盅炖燕窝",
+        "私房慢炖清汤"
+      ]
+    }
+  ]
+}

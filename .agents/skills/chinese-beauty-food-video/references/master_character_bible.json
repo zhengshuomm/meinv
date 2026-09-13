@@ -1,0 +1,40 @@
+{
+  "ip_protagonist_id": "chinese_beauty_master_yujie",
+  "name_cn": "沈昭 (昭昭)",
+  "title": "跨视频全局唯一定妆女主档案 (Universal IP Master Character Bible)",
+  "status": "LOCKED (永久锁定，全系列通用)",
+  "master_keyframe_path": "assets/character_master/shen_zhao_master.jpg",
+  "demographics": {
+    "age": 20,
+    "gender": "Female",
+    "ethnicity": "Chinese (East Asian)",
+    "archetype": "高冷老饕御姐 (Yu Jie - Sophisticated, Cool, Alluring Food Connoisseur)",
+    "height": "172 cm (Supermodel proportions, long slender legs)",
+    "body_type": "Tall, slender, elegant collarbones, straight shoulders, perfect 9:16 vertical video proportions"
+  },
+  "facial_features": {
+    "face_shape": "Sharp, refined oval face with distinct jawline and delicate chin",
+    "skin_tone": "Flawless cold porcelain fair skin (冷白皮), natural translucent skin texture with microscopic pores",
+    "eyes": "Captivating almond-shaped cat-like eyes, piercing yet playful gaze, double eyelids, natural dark lashes",
+    "nose": "High, straight, delicate bridge with refined tip",
+    "lips": "Naturally plump, soft rosy nude with subtle natural gloss, confident slight smirk",
+    "signature_mark": "Tiny, elegant beauty mark (泪痣) just below the outer corner of the right eye (用于跨模型多镜头身份强锚定)"
+  },
+  "hair": {
+    "color": "Natural jet black (乌黑秀发)",
+    "style": "Sleek high ponytail with natural textured ends and delicate whisps of hair framing the cheeks (冷艳利落高马尾)",
+    "alternative_style": "Soft, glossy shoulder-length micro-waves with clean center part"
+  },
+  "signature_wardrobe": {
+    "concept": "极简高级修身，大方展示修长身材与优越腿长，高级雅致，绝不艳俗",
+    "primary_outfit": "Chic high-waisted black ribbed slit knit midi dress paired with stylish black leather ankle boots, revealing long slender legs naturally",
+    "outerwear": "Tailored charcoal grey oversized trench coat draped elegantly over shoulders",
+    "accessories": "Minimalist silver snake-bone clavicle necklace, understated small silver hoop earrings"
+  },
+  "eating_personality": {
+    "contrast_appeal": "外表高冷飒爽御姐，入口第一秒冷傲瞬间融化为眼神放大的沉沦陶醉（反差萌拉满）",
+    "eating_manner": "动作优雅利落，懂行且狠，拿筷姿态专业，直视镜头时眼神极具杀伤力与亲和力"
+  },
+  "master_prompt_token": "The locked 20-year-old Chinese Yu Jie beauty Shen Zhao, tall 172cm slender model stature with long legs, luminous fair porcelain skin with fine pores, sharp elegant jawline, captivating cat-like eyes with signature tiny beauty mark below right eye, high neat ponytail with natural black hair, chic high-waisted black slit knit dress, silver snake-bone necklace, confident cool alluring foodie expression",
+  "master_negative_token": "face changing, different person, western face, round baby face, chubby cheeks, curly brown hair, blonde, heavy vulgar makeup, plastic surgery look, uncanny eyes, distorted limbs, short legs, baggy unflattering clothing, aging wrinkles, extra fingers, cartoonish anime style."
+}
