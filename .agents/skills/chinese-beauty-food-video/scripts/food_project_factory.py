@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 """
-中华美食短视频工程立项脚手架 (纯中文版)
-功能：
-1. 从永久女主库中智能匹配或随机挑选一位女主，全片8镜从头到尾锁定该女主；
-2. 固定绑定该女主独有的性格、说话音色与表达口吻；
-3. 选配抖音热门爆款中文BGM与闪避混音策略；
-4. 100% 生成纯中文六段式视频生成提示词与严苛负向约束。
+中华美食短视频工程立项脚手架 (V2 动态工业版)
+执行链路：
+Food Research (事实校验) 
+  ➔ Creative Angle (核心创意角度) 
+  ➔ Hook Generator (动态黄金钩子，8-16字) 
+  ➔ Narration Writer (自然真实中文旁白，120-155字，1-2个Punchline，去AI腔) 
+  ➔ Storyboard Planner (动态 6 镜分镜架构) 
+  ➔ Reference Anchor & Prompt Builder (结构化权重提示词)
 """
 
 import os
@@ -13,6 +15,8 @@ import sys
 import json
 import random
 import argparse
+
+WORKSPACE_ROOT = os.path.normpath(os.path.join(os.path.dirname(__file__), "..", "..", "..", ".."))
 
 def load_character_pool():
     pool_path = os.path.join(os.path.dirname(__file__), "..", "references", "character_roster_pool.json")
@@ -22,261 +26,369 @@ def load_character_pool():
             return data.get("characters", [])
     return []
 
-def select_character(pool, character_query=None, food_name=None):
+def select_character(pool, character_query=None, food_name=None, city=None):
+    """根据食物、地域、风格自适应推荐女主"""
     if not pool:
         return {
             "character_id": "shen_zhao_yujie",
             "name": "沈昭",
             "style_label": "高冷老饕御姐风",
-            "visual_traits": "20岁，冷白皮，身材高挑172cm超模比例，修长大长腿，精致下颌线，微挑猫眼，右眼角下方带有一颗标志性微小精致泪痣，高扎利落黑马尾，身穿黑色高开叉修身针织裙配黑色皮靴，银色蛇骨锁骨链，清冷高级伪素颜妆容。",
+            "photo_path": "assets/character_master/shen_zhao_master.jpg",
+            "visual_traits": "20岁，冷白皮，身材高挑172cm超模比例，修长身材，清冷高级下颌线，微挑猫眼，右眼角小泪痣，黑色高马尾，身穿黑色修身V领针织长裙配银色细锁骨链。",
             "personality": "高冷飒爽、懂行挑剔、极度自信、对美食毫不妥协，反差萌极强。",
             "voice_persona": {"voice_name": "zh-CN-XiaoxiaoNeural", "style": "cheerful", "rate": "+10%"},
             "expression_style": "毒舌犀利、一针见血、老饕黑话张口就来。"
         }
     
-    # 1. 精确指定 ID 或姓名
     if character_query:
         for char in pool:
             if character_query in char.get("name", "") or character_query == char.get("character_id", "") or character_query in char.get("style_label", ""):
                 return char
-                
-    # 2. 根据美食智能契合推荐
-    if food_name:
-        for char in pool:
-            for match in char.get("best_match_cuisines", []):
-                if match in food_name or food_name in match:
-                    return char
-                    
-    # 3. 随机选配一位
+
+    # 根据地域与食物匹配
+    combined = f"{city or ''} {food_name or ''}"
+    for char in pool:
+        for match in char.get("best_match_cuisines", []):
+            if match in combined:
+                return char
+
     return random.choice(pool)
 
-BGM_DATABASE = {
-    "高冷老饕御姐风": {"track": "《市井小调》（欢快古风琵琶卡点纯音乐）", "genre": "市井古风卡点", "energy": "节奏明快、提神带劲"},
-    "清纯初恋邻家风": {"track": "《想去海边》（原声吉他轻快跳跃版）", "genre": "温暖治愈民谣", "energy": "甜美轻快、清新治愈"},
-    "新中式国风古典风": {"track": "《青花瓷》（清雅纯筝典雅纯音）", "genre": "东方丝竹古韵", "energy": "优雅悠扬、如诗如画"},
-    "90年代港风复古明艳风": {"track": "《初恋》（复古微醺慢摇萨克斯版）", "genre": "港岛复古慢摇", "energy": "慵懒微醺、高级从容"},
-    "知性书卷温婉风": {"track": "《江南雨碎》（温润丝竹琵琶纯音）", "genre": "温润东方电台", "energy": "娓娓道来、抚慰人心"},
-    "灵动猫系千金名媛风": {"track": "《欢喜就好》（国风欢快轻音乐伴奏）", "genre": "俏皮轻快国潮", "energy": "娇憨灵动、充满喜感"},
-    "川渝江湖元气小辣椒": {"track": "《人间烟火》（国风轻快竹笛节奏版）", "genre": "热辣市井烟火", "energy": "欢快热烈、食欲大开"},
-    "阳光街头酷飒辣妹风": {"track": "《吹灭小山河》（欢快竹笛伴奏版）", "genre": "街头江湖侠气", "energy": "痛快爽朗、豪迈大气"},
-    "森系日杂清透氧气风": {"track": "《起风了》（温暖木吉他空灵指弹版）", "genre": "治愈空灵木吉他", "energy": "温柔纯净、静谧温润"},
-    "赛博国潮机能拽姐风": {"track": "《囍》（重低音唢呐国潮电音卡点版）", "genre": "国潮电音重低音", "energy": "炸裂狠辣、专治不服"},
-    "夜色微醺纯欲辣妹风": {"track": "《风的季节》（慢调爵士铜管纯音乐）", "genre": "微醺爵士慢调", "energy": "夜色撩人、高级奢华"},
-    "奢雅黑裙名媛御姐风": {"track": "《风的季节》（慢调复古微醺纯音乐）", "genre": "微醺爵士慢调", "energy": "奢雅从容、高级质感"},
-    "都市轻熟明朗探店风": {"track": "《吹灭小山河》（轻快竹笛伴奏版）", "genre": "明快市井轻音乐", "energy": "活力明快、亲切生动"},
-    "极简纯欲私享名媛风": {"track": "《起风了》（温暖木吉他空灵指弹版）", "genre": "空灵治愈纯音乐", "energy": "松弛轻柔、高级私享"}
-}
+def conduct_food_research(food_name: str, city: str = "", province: str = ""):
+    """Stage 1: 地方美食事实调研 (构建 food_profile)"""
+    # 典型美食特征库内置兜底（支持根据传入的美食动态生成真实画像）
+    known_database = {
+        "热干面": {
+            "canonical_name": "武汉热干面",
+            "city": "武汉",
+            "province": "湖北",
+            "category": "特色面食 / 过早文化",
+            "core_ingredients": ["碱水面（碱面提前掸过放凉）", "纯芝麻酱（小磨香油化开）", "辣萝卜丁", "酸豆角", "香葱", "生抽老抽", "少许蒜水"],
+            "signature_process": ["沸水锅中大笊篱捞面几秒即起", "扣入纸碗甩净水分", "大勺淋上稠厚香浓的纯芝麻酱", "飞快撒入红亮辣萝卜丁与葱花"],
+            "signature_eating_method": ["必须在30秒内用筷子上下飞速翻拌均匀", "让每一根粗面条均匀挂满浓酱", "趁热大口挑起吃"],
+            "visual_highlights": ["捞面瞬间升腾的浓白水汽", "深褐色芝麻酱如绸缎般浇在黄色碱面上", "双手筷子翻飞快速拌匀的动感", "爽脆红萝卜丁"],
+            "texture": ["面条扎实筋道微偏硬", "芝麻酱醇厚粘稠浓郁", "萝卜丁清脆解腻"],
+            "flavor": ["浓郁复合芝麻坚果香", "咸鲜微辣微甜", "后味麦香回甘"],
+            "cultural_context": "武汉人清晨‘过早’的精神图腾，边走边吃，雷厉风行。",
+            "common_misconceptions": ["误以为是煮烂的挂面", "误以为放麻酱很多水会稀", "放陈醋或者花生酱（外地改版）"],
+            "must_not_show": ["清汤面条", "面条软烂断裂", "优雅用刀叉吃", "长时间放置坨成面饼"]
+        },
+        "生煎": {
+            "canonical_name": "上海生煎包（生煎馒头）",
+            "city": "上海",
+            "province": "上海",
+            "category": "传统点心",
+            "core_ingredients": ["半发酵面皮", "紧实猪肉馅（加入皮冻熬制高汤）", "香葱", "黑白芝麻", "菜籽油"],
+            "signature_process": ["大平底生铁锅密密麻麻排满生煎", "油煎到底部微黄后泼水加盖焖熟", "揭开巨大木质锅盖瞬间水汽轰然腾起", "撒上大把碧绿葱花与炒香芝麻"],
+            "signature_eating_method": ["先开窗后喝汤，轻轻咬开侧面上方小口，吹凉后先吸鲜甜肉汁，再蘸镇江香醋吃皮肉与焦底"],
+            "visual_highlights": ["木锅盖揭开瞬间大团白雾与热油滋啦轰鸣", "平底铲起生煎时露出的金黄酥脆焦底", "咬破薄皮瞬间清亮高汤如琥珀流淌"],
+            "texture": ["底部金黄硬脆焦香", "顶皮松软白嫩", "肉馅抱团弹牙", "汤汁滚烫鲜甜"],
+            "flavor": ["鲜甜肉香", "焦香酥脆麦香", "葱香芝麻香交融"],
+            "cultural_context": "上海弄堂烟火气的经典代表，排队等出锅的市井仪式感。",
+            "common_misconceptions": ["直接整个大口咬下被烫得满嘴起泡喷溅", "底部烤焦发黑"],
+            "must_not_show": ["汤汁无故爆炸喷射射中镜头", "用微波炉加热软塌塌的生煎", "里面没有汤汁干瘪的肉馅"]
+        },
+        "淄博烧烤": {
+            "canonical_name": "淄博烧烤",
+            "city": "淄博",
+            "province": "山东",
+            "category": "市井烧烤",
+            "core_ingredients": ["散发麦香的山东手工薄面饼", "临淄嫩青白小葱", "秘制咸鲜甜面酱", "七分瘦三分肥现切炭烤五花肉与牛肉串"],
+            "signature_process": ["师傅先在大火炉烤至七八成熟", "端上桌放在每桌专属双层红泥独立小炭炉上翻烤", "肉串滋啦冒出金色油花"],
+            "signature_eating_method": ["左手拿薄饼对折沾上甜面酱，夹上一整根嫩小葱，包裹两三串刚离火的滚烫肉串，右手利落反手反抽铁签，整口吞嚼"],
+            "visual_highlights": ["红泥独立炭炉红炭火星微爆", "面饼裹肉利落反手抽铁签的爽快瞬间", "小葱青翠与焦黄五花肉的色彩反差"],
+            "texture": ["面饼麦香韧劲", "五花肉焦香外脆内爆油", "生小葱清甜脆嫩解腻"],
+            "flavor": ["炭火焦香", "酱香甜咸", "葱香微辛带甘"],
+            "cultural_context": "山东齐鲁大地的豪爽烟火气，围炉而坐的真诚与纯粹。",
+            "common_misconceptions": ["直接撸串不卷饼", "用大葱而不是细嫩小葱", "不放甜面酱"],
+            "must_not_show": ["电烤箱", "普通冷冻速冻肉串", "没有独立小烤炉"]
+        }
+    }
 
-def load_custom_script(script_path: str) -> list:
-    """加载经过大模型打磨后的完美剧本台词"""
-    if not os.path.exists(script_path):
-        return None
-    with open(script_path, "r", encoding="utf-8") as f:
-        content = f.read().strip()
-    # 尝试解析 JSON
-    try:
-        data = json.loads(content)
-        if isinstance(data, list):
-            return [item.get("台词") or item.get("text") or str(item) for item in data]
-        if isinstance(data, dict):
-            lines = data.get("润色后分镜台词") or data.get("shots") or data.get("台词") or []
-            if lines:
-                return [item.get("台词") or item.get("text") or str(item) for item in lines]
-    except Exception:
-        pass
-    # 按行解析
-    lines = [line.strip() for line in content.split("\n") if line.strip() and not line.startswith("#")]
-    return lines
+    # 优先使用数据库，否则基于输入动态组装标准数据结构
+    matched = None
+    for k, v in known_database.items():
+        if k in food_name or food_name in k:
+            matched = v.copy()
+            break
 
-def create_food_project(food_name: str, character_query: str = None, region_hint: str = "川渝", custom_script_path: str = None):
-    pool = load_character_pool()
-    char = select_character(pool, character_query, food_name)
-    char_name = char.get("name", "女主")
-    style_label = char.get("style_label", "特色风")
-    bgm_info = BGM_DATABASE.get(style_label, {"track": "《人间烟火》（国风轻快竹笛版）", "genre": "市井轻音乐", "energy": "欢快舒畅"})
+    if not matched:
+        matched = {
+            "canonical_name": f"{city or ''}{food_name}",
+            "city": city or "地方名城",
+            "province": province or "地方",
+            "category": "地道地方特色美食",
+            "core_ingredients": [f"地道现做{food_name}核心主料", "秘制地域风味酱料", "新鲜当地佐料小菜"],
+            "signature_process": [f"大锅热气翻滚现做{food_name}", "师傅熟练操作出锅瞬间热气氤氲", "趁热装盘淋上特调料汁"],
+            "signature_eating_method": [f"趁刚出锅最热腾腾时品尝第一口，搭配当地特制蘸料"],
+            "visual_highlights": [f"刚出锅升腾的白色热气", f"{food_name}金黄诱人的纹理与油润光泽", "用筷子夹起或盛起的细节特写"],
+            "texture": ["外脆内嫩或筋道爽滑", "层次分明"],
+            "flavor": ["地道鲜香浓郁", "地道本味回甘"],
+            "cultural_context": f"{city or '当地'}市井烟火深处代代相传的地道滋味。",
+            "common_misconceptions": ["误以为是工业预制菜", "非当地正统搭配吃法"],
+            "must_not_show": ["冷冰冰无热气", "机器流水线质感", "违背当地正统吃法的手法"]
+        }
+    return matched
+
+def plan_creative_angle(food_profile: dict, tone_preference: str = None) -> str:
+    """Stage 2: 创意角度决策"""
+    angles = [
+        {"id": "反差感", "desc": "外表看着低调市井，入口完全超乎预期，极具反差冲击。"},
+        {"id": "城市性格", "desc": f"一种美食如何折射出{food_profile['city']}清晨或深夜的人间烟火与城市性格。"},
+        {"id": "感官细节", "desc": "聚焦滚烫、焦脆、爆汁或爽滑的一瞬间感官生理刺激。"},
+        {"id": "地方规矩", "desc": f"为什么{food_profile['city']}当地老饕一定会坚持这样的吃法仪式感。"},
+        {"id": "第一口真实体验", "desc": "剥离网红滤镜，还原普通食客第一口最直观的咀嚼味觉解构。"}
+    ]
+    return random.choice(angles)
+
+def generate_hooks(food_profile: dict, char: dict) -> list:
+    """Stage 3: 动态生成 5 个强 Hook 候选 (8-16字，短促有力，一个视觉事件+一句话)"""
+    food = food_profile["canonical_name"]
+    city = food_profile["city"]
     
-    project_id = f"{food_name.replace(' ', '_')}_45秒全案"
+    candidates = [
+        f"{city}人的清晨，下手比谁都狠。",
+        f"等一下，这里面的汤汁有点犯规。",
+        f"敢在老居民楼下排长队的，全是硬角色。",
+        f"别眨眼，这一铲子下去才是灵魂所在。",
+        f"闻着想走，吃完一口直接不想走。"
+    ]
+    if "热干面" in food:
+        candidates = [
+            "武汉人的早晨，真有点狠。",
+            "三十秒拌不开，这一碗就废了。",
+            "在武汉过早，千万别跟面客客气气。",
+            "这勺芝麻酱，比我想象得要厚得多。",
+            "敢把早餐吃得这么雷厉风行的，只有武汉。"
+        ]
+    elif "生煎" in food:
+        candidates = [
+            "等等，这一个里面全是滚烫高汤？",
+            "这一锅开盖，整个弄堂全醒了。",
+            "吃生煎敢大口咬的，都是狠人。",
+            "底有多脆，里面的肉汁就有多凶。",
+            "老上海人的下午茶，原来这么热气腾腾。"
+        ]
+    elif "烧烤" in food:
+        candidates = [
+            "大口吃肉，才是成年人最纯粹的快乐。",
+            "别眨眼，这一抽铁签有多痛快？",
+            "在淄博吃烧烤，桌上没有炉子就别坐下。",
+            "小葱一折面饼一裹，这口谁顶得住？",
+            "淄博的夜市，藏着最滚烫的人间烟火。"
+        ]
+    return candidates
+
+def generate_natural_narration(food_profile: dict, char: dict, hook: str) -> dict:
+    """Stage 4: 自然真实中文旁白生成 (严格 120-155 字，1-2 个 Punchline，去 AI 腔)"""
+    food = food_profile["canonical_name"]
+    city = food_profile["city"]
+    ingredients = food_profile["core_ingredients"]
+    
+    if "热干面" in food:
+        segments = {
+            "shot1": hook, # ~12字
+            "shot2": f"随便一家老店，灶台腾着大团白汽，食客端着纸碗站在路边开拌。", # 28字
+            "shot3": f"大笊篱沸水里一沉一浮，面捞起扣入碗，一勺稠厚纯芝麻酱立马盖上。", # 29字
+            "shot4": f"撒上辣萝卜丁，双手翻挑三十秒挂满浓酱，面条偏硬筋道。", # 25字
+            "shot5": f"大口下肚，坚果浓香醇厚，萝卜丁的脆特别解腻，越嚼越香。", # 26字
+            "shot6": f"武汉人的早晨，靠这一口把自己彻底叫醒。" # 20字 (Punchline)
+        }
+    elif "生煎" in food:
+        segments = {
+            "shot1": hook, # ~14字
+            "shot2": f"老弄堂拐角的小铺，排队的人全盯着大铁锅，谁也不急。", # 24字
+            "shot3": f"木锅盖一掀，水汽混着油香轰地散开，撒满葱花芝麻。", # 23字
+            "shot4": f"铲起焦黄脆底，咬开一个小口，清亮高汤慢慢淌出。", # 22字
+            "shot5": f"先抿一口鲜汤，肉馅紧实弹牙，香醋正好解了酥脆的油气。", # 25字
+            "shot6": f"弄堂里这一口热烫，胜过太多华而不实的东西。" # 21字 (Punchline)
+        }
+    else: # 淄博烧烤与通用
+        segments = {
+            "shot1": hook, # ~14字
+            "shot2": f"露天排档通红的独立小炭炉，才是老饕碰头的专属暗号。", # 25字
+            "shot3": f"五花肉在炭火上滋啦冒油，微小火星窜起，焦香扑鼻。", # 23字
+            "shot4": f"折面饼刷面酱，压上一根嫩葱，反手一抽，焦脆肉块全留饼里。", # 27字
+            "shot5": f"小葱清脆辛香，撞开五花肉爆出的肉汁，越嚼越过瘾。", # 24字
+            "shot6": f"围炉大口吃肉，人间烟火气，大概就是这个模样。" # 22字 (Punchline)
+        }
+
+    total_chars = sum(len(txt) for txt in segments.values())
+    return {
+        "segments": segments,
+        "total_chars": total_chars
+    }
+
+def build_v2_storyboard(food_profile: dict, char: dict, hook: str, narration_data: dict) -> list:
+    """Stage 5: 动态 6 镜分镜架构规划与提示词构建"""
+    char_name = char.get("name", "女主")
+    food = food_profile["canonical_name"]
+    city = food_profile["city"]
+    segs = narration_data["segments"]
+    master_photo = char.get("photo_path", "assets/character_master/shen_zhao_master.jpg")
+
+    # 统一 6 镜叙事架构 (6~8秒/镜)
+    shots = [
+        {
+            "id": 1,
+            "start": 0.0,
+            "end": 4.0,
+            "duration": 4.0,
+            "function": "hook",
+            "title": "动态黄金抓人钩子 (视觉事件+情绪反应)",
+            "focus": "character+food",
+            "reference_strategy": "character_reference",
+            "initial_image": master_photo,
+            "action": f"女主{char_name}手持刚出锅冒着热气的{food}准备品尝，眼神聚焦食物带有一丝好奇与期待，微推镜头",
+            "narration": segs["shot1"],
+            "dialogue": segs["shot1"],
+            "prompt": f"电影级中近景平缓微推镜头。严格保持与人物参考图完全相同的中国女性：保持相同面部身份、五官、发型、妆容、服装和饰品，不改变服装和饰品。画面主体为20岁中国女性{char_name}，优雅手持刚制作出锅、冒着细腻半透明白色蒸汽的{food}对准镜头，动作自然生动，眼神明亮专注，自然流露微讶与期待的自然微表情。暖黄色市井氛围光，35mm电影镜头浅景深，皮肤纹理真实自然，极致食物质感与生活呼吸感。"
+        },
+        {
+            "id": 2,
+            "start": 4.0,
+            "end": 10.0,
+            "duration": 6.0,
+            "function": "context",
+            "title": "城市环境与市井烟火交代",
+            "focus": "character+scene",
+            "reference_strategy": "previous_frame",
+            "action": f"女主{char_name}从容坐在{city}市井餐馆木桌前，身姿舒展挺拔，周围食客笑谈，店内环境烟火氤氲",
+            "narration": segs["shot2"],
+            "dialogue": segs["shot2"],
+            "prompt": f"电影级中景平缓横移镜头。严格保持与人物参考图完全相同的中国女性：保持相同面部身份、五官、发型、妆容、服装和饰品。20岁中国女性{char_name}自然端坐在{city}老字号市井餐馆的木桌旁，神态放松自信，身姿挺拔修长。背景是食客谈笑与后厨升腾的白色热气，暖色调自然光影，环境层次真实细腻，电影胶片质感。"
+        },
+        {
+            "id": 3,
+            "start": 10.0,
+            "end": 18.0,
+            "duration": 8.0,
+            "function": "signature_process",
+            "title": "最具辨识度的制作高潮过程",
+            "focus": "food_process",
+            "reference_strategy": "food_reference",
+            "action": f"后厨操作台特写：{food_profile['signature_process'][0]}，热气升腾，酱汁淋入瞬间微沸",
+            "narration": segs["shot3"],
+            "dialogue": segs["shot3"],
+            "prompt": f"电影级特写俯角微下潜跟焦镜头。聚焦{city}{food}最经典的制作过程：刚离火的滚烫食材在大铁锅或灶台之间剧烈翻动，大团细腻半透明的浓郁白汽升腾弥漫，秘制酱汁与金黄油脂在食材表面折射出诱人光泽，真实食材重力与流动感，4K超高清细节与电影级光影。"
+        },
+        {
+            "id": 4,
+            "start": 18.0,
+            "end": 27.0,
+            "duration": 9.0,
+            "function": "food_detail",
+            "title": "特色吃法细节与地道秘密",
+            "focus": "food_detail",
+            "reference_strategy": "previous_frame",
+            "action": f"近景特写：筷子熟练操作{food_profile['signature_eating_method'][0]}，层次分明，油润光泽",
+            "narration": segs["shot4"],
+            "dialogue": segs["shot4"],
+            "prompt": f"电影级慢动作微距前移镜头。镜头聚焦于{food}的局部细节与层次结构：纤细自然的手部握着餐具熟练展示正统地道吃法，酱汁浓稠挂壁，配菜色泽新鲜分明，真实细腻的微观物理动态，光泽通透，浅景深虚化背景。"
+        },
+        {
+            "id": 5,
+            "start": 27.0,
+            "end": 37.0,
+            "duration": 10.0,
+            "function": "taste",
+            "title": "女主真正品尝与自然微表情反差",
+            "focus": "character+taste",
+            "reference_strategy": "reanchor_character",
+            "action": f"女主{char_name}将刚弄好的{food}送入口中轻嚼品味，微顿半秒，眉头轻舒露出一抹真实的惊喜与满足微笑",
+            "narration": segs["shot5"],
+            "dialogue": segs["shot5"],
+            "prompt": f"电影级中近景面部特写平缓微推镜头。严格保持与人物参考图完全相同的中国女性：保持相同面部身份、五官、发型、妆容、服装和饰品。女主{char_name}将美食送入口中细细咀嚼，动作自然优雅，真实面部肌肉动态。入口瞬间眼神停顿半秒，随后自然浮现眉梢轻扬的惊喜赞叹与满足微笑，真实微表情，拒绝夸张网红大瞪眼，极具真实感官说服力。"
+        },
+        {
+            "id": 6,
+            "start": 37.0,
+            "end": 45.0,
+            "duration": 8.0,
+            "function": "verdict",
+            "title": "从容总结与城市记忆金句收尾",
+            "focus": "character+verdict",
+            "reference_strategy": "previous_frame",
+            "action": f"女主{char_name}咽下食物，直视镜头露出坦荡从容的浅笑，眼神灵动有态度，自然收尾",
+            "narration": segs["shot6"],
+            "dialogue": segs["shot6"],
+            "prompt": f"电影级中近景固定机位镜头。严格保持与人物参考图完全相同的中国女性：保持相同面部身份、五官、发型、妆容、服装和饰品。女主{char_name}满足品尝后从容看向镜头，眼神带有一丝老饕专有的通透与温和笑意，神情自信，光影温暖柔和，为全片带来充满记忆点的从容收尾，真人实拍电影质感。"
+        }
+    ]
+    return shots
+
+def create_v2_project(food_name: str, city: str = "", character_query: str = None, output_path: str = None):
+    """主工厂入口：生成完整的 V2 项目工程配置"""
+    pool = load_character_pool()
+    char = select_character(pool, character_query, food_name, city)
+    food_profile = conduct_food_research(food_name, city=city or char.get("city", ""))
+    angle = plan_creative_angle(food_profile)
+    hooks = generate_hooks(food_profile, char)
+    selected_hook = hooks[0] # 默认选第1个最强hook
+    
+    narration_data = generate_natural_narration(food_profile, char, selected_hook)
+    storyboard = build_v2_storyboard(food_profile, char, selected_hook, narration_data)
+    
+    project_id = f"{food_name.replace(' ', '_')}_v2_45s"
     
     config = {
-        "项目编号": project_id,
-        "美食主题": food_name,
-        "归属地域": region_hint,
-        "出镜女主设定": {
-            "女主姓名": char_name,
-            "风格定位": style_label,
-            "定妆原图路径": char.get("photo_path", ""),
+        "project_id": project_id,
+        "title": f"{food_profile['city']}{food_name}",
+        "food_title": food_profile["canonical_name"],
+        "city": food_profile["city"],
+        "character": {
+            "character_id": char.get("character_id", "shen_zhao_yujie"),
+            "女主姓名": char.get("name", "女主"),
+            "风格定位": char.get("style_label", "特色风"),
+            "定妆原图路径": char.get("photo_path", "assets/character_master/shen_zhao_master.jpg"),
             "身材与面貌特征": char.get("visual_traits", ""),
-            "固定性格": char.get("personality", ""),
-            "固定说话音色": char.get("voice_persona", {}),
-            "固定表达口癖": char.get("expression_style", "")
+            "personality": char.get("personality", ""),
+            "voice_persona": char.get("voice_persona", {})
         },
-        "抖音爆款背景音乐配置": {
-            "推荐中文曲目": bgm_info["track"],
-            "音乐风格": bgm_info["genre"],
-            "情绪调性": bgm_info["energy"],
-            "智能闪避混音策略": "人声口播时音量压低至18%垫乐，第一口咀嚼试吃时BGM瞬间静音留白突出清脆ASMR拟音，前3秒钩子与收尾金句重音卡点强化完播。"
+        "character_reference": char.get("photo_path", "assets/character_master/shen_zhao_master.jpg"),
+        "food_profile": food_profile,
+        "creative_angle": angle,
+        "hooks": hooks,
+        "selected_hook": selected_hook,
+        "narration": {
+            "total_chars": narration_data["total_chars"],
+            "segments": narration_data["segments"]
         },
-        "视频总时长": 45.0,
-        "画面比例": "竖屏 9:16",
-        "母带标准电平": "-17.0 LUFS 广播级标准",
-        "分镜列表": [
-            {
-                "镜号": 1,
-                "时间": "0.0秒 - 3.0秒",
-                "时长": 3.0,
-                "阶段定位": "黄金3秒反常识钩子 (感官核爆)",
-                "景别与运镜": "电影级超微距极慢平稳前推镜头",
-                "画面描述": f"刚出锅滚烫翻滚的{food_name}在铁锅中剧烈滋啦冒泡，大团细腻半透明的白色蒸汽扑面而来，金黄酥脆或红亮诱人，油脂折射出极其诱人的高光。",
-                "参考帧继承策略": "食物微距基准首帧",
-                "旁白台词": "看着最不起眼的小摊，下手往往最狠。",
-                "字数": 17,
-                "声音拟音与音乐控制": "重音顿音伴随热油爆裂滋啦声；BGM卡点切入 (30%音量)",
-                "纯中文视频生成提示词": f"电影级超微距极慢平稳前推镜头。刚出锅滚烫翻滚的{food_name}正在剧烈滋啦翻滚冒泡，浓郁诱人的油花飞溅，大团细腻半透明的热腾腾白色热气升腾扑面而来，暖黄色钨丝灯光在食材表面折射出通透金红高光，浅景深虚化背景。真人电影实拍质感，4K超高清细腻质感，24帧自然动态模糊，极致食欲冲击。"
-            },
-            {
-                "镜号": 2,
-                "时间": "3.0秒 - 8.0秒",
-                "时长": 5.0,
-                "阶段定位": "建立背景与女主入场 (立人设与气场)",
-                "景别与运镜": "电影级中景水平推进镜头，展现挺拔身材与修长大长腿",
-                "画面描述": f"锁定的女主{char_name}优雅端坐在市井老字号小店木桌前，展现出{char.get('visual_traits', '')}，眼神自信从容，嘴角带着老饕专属浅笑，静待美食端上。",
-                "参考帧继承策略": f"绑定女主定妆原图 ({char.get('photo_path', '')})",
-                "旁白台词": f"在本地敢把招牌做成这副模样的，全是有恃无恐的狠角色。",
-                "字数": 26,
-                "声音拟音与音乐控制": "市井人声鼎沸环境音；BGM音量平滑压低至18%作为垫乐",
-                "纯中文视频生成提示词": f"电影级中景水平平缓推进镜头。画面主体为锁定的20岁中国美女{char_name}，{char.get('visual_traits', '')}，神情从容自信，身段挺拔，优雅端坐在市井烟火气老字号餐馆木桌前，长腿线条自然优美舒展。店内暖黄灯光与远处白色水汽交织，真实皮肤毛孔与发丝细节，4K真人实拍电影感。"
-            },
-            {
-                "镜号": 3,
-                "时间": "8.0秒 - 14.0秒",
-                "时长": 6.0,
-                "阶段定位": "微观烹饪与烟火镬气 (火候密码)",
-                "景别与运镜": "快速平移下潜特写镜头，聚焦灶台火候",
-                "画面描述": f"老师傅手起勺落，猛火颠锅翻炒{food_name}，浓烈白烟带着火星升腾而起，秘制酱汁瞬间爆香，镬气十足。",
-                "参考帧继承策略": "继承第2镜环境，特写后厨操作台",
-                "旁白台词": f"差一秒火候就老，多一滴料汁就腻，老饕的心全被这勺镬气拿捏了。",
-                "字数": 28,
-                "声音拟音与音乐控制": "猛火轰鸣声、大铁锅铿锵翻炒撞击声；BGM平稳烘托",
-                "纯中文视频生成提示词": f"特写快速俯角推进镜头。后厨猛火灶台上火舌翻滚，老师傅动作极其利落地快速颠勺爆炒{food_name}，浓郁的白色蒸汽夹杂着热油焦香猛烈升腾，酱汁淋入铁锅的一瞬间剧烈爆裂，市井烟火镬气十足，真实微观动态，4K高清电影光影。"
-            },
-            {
-                "镜号": 4,
-                "时间": "14.0秒 - 20.0秒",
-                "时长": 6.0,
-                "阶段定位": "沉浸互动与老饕规矩 (专业吃法仪式感)",
-                "景别与运镜": "特写镜头微俯拍伴随轻微跟焦",
-                "画面描述": f"女主{char_name}纤纤玉手拿起筷子或调羹，动作内行地拌匀或蘸取特制料汁，神情专注且享受。",
-                "参考帧继承策略": "继承第2镜女主手部与身形",
-                "旁白台词": f"吃它得懂规矩，趁着滚烫十秒内翻拌均匀，让每一处都挂满滋味。",
-                "字数": 27,
-                "声音拟音与音乐控制": "餐具轻碰瓷碗声、浓稠酱汁翻拌声；BGM低缓流动",
-                "纯中文视频生成提示词": f"特写镜头轻微跟焦。锁定的女主{char_name}纤细优美的手指握着深色竹筷，动作极其熟练优雅地将刚出锅的{food_name}充分翻拌裹匀酱汁，食材裹满红亮光泽，热气徐徐升起，真实手部肌理与瓷碗温润质感，浅景深电影画面。"
-            },
-            {
-                "镜号": 5,
-                "时间": "20.0秒 - 26.0秒",
-                "时长": 6.0,
-                "阶段定位": "极致食欲特写近景 (食欲巅峰瞬间)",
-                "景别与运镜": "电影级极慢动作微距滑移镜头",
-                "画面描述": f"筷子挑起挂满酱汁的{food_name}举至镜头前，晶莹剔透，浓醇酱汁顺着边缘欲滴未滴，高光闪烁。",
-                "参考帧继承策略": "继承第4镜食材特写",
-                "旁白台词": "这香味不是飘出来的，是直接撞进天灵盖的霸道。",
-                "字数": 22,
-                "声音拟音与音乐控制": "浓汁滴落微音、细微滋啦沸腾音；BGM逐渐弱化",
-                "纯中文视频生成提示词": f"电影级慢动作微距推进镜头。筷子夹起一块诱人饱满的{food_name}，浓稠诱人的酱汁如琥珀般挂在边缘缓缓滴落，表层油脂在暖黄灯光下折射出璀璨高光，热气微动，4K超写实极致食欲细节。"
-            },
-            {
-                "镜号": 6,
-                "时间": "26.0秒 - 33.0秒",
-                "时长": 7.0,
-                "阶段定位": "第一口试吃高潮与反转 (情绪释放)",
-                "景别与运镜": "中近景面部特写平缓微推镜头，精准捕捉微表情",
-                "画面描述": f"女主{char_name}将食物送入口中轻咬咀嚼，冷傲/平静的神情瞬间融化，双眸因极致美味猛然放大，惊喜满足地陶醉颔首。",
-                "参考帧继承策略": f"【强制重定向】回溯至第2镜女主{char_name}面部末帧，绝不继承第5镜无脸食材",
-                "旁白台词": "第一口还没咽下去，舌头先缴械投降，胃跟着直接起义了。",
-                "字数": 25,
-                "声音拟音与音乐控制": "【BGM瞬间留白静音】；极清脆咬碎咔嚓脆响或大口吸溜吞咽声",
-                "纯中文视频生成提示词": f"【重定向锚定第2镜女主定妆末帧】中近景面部特写平缓微推镜头。锁定的20岁中国女主{char_name}将美食送入口中轻咬，真实自然的咀嚼动作，入口瞬间眼神从从容转化为难以置信的惊喜放大，眉梢舒展，嘴角泛起彻底沉沦的陶醉浅笑与赞叹颔首，真实面部毛孔纹理与咀嚼吞咽微动态，4K超清电影画质。"
-            },
-            {
-                "镜号": 7,
-                "时间": "33.0秒 - 39.0秒",
-                "时长": 6.0,
-                "阶段定位": "老饕深度品味与灵魂升华",
-                "景别与运镜": "中景镜头平缓后拉，融于市井暖光",
-                "画面描述": f"女主{char_name}满足地放下筷子，轻舒一口气，眼神深情而通透，整个人被温暖晨光与香气笼罩。",
-                "参考帧继承策略": "继承第6镜试吃末帧，锁死面容体态",
-                "旁白台词": "有些城市靠风景让人记住，有些城市，全凭这一口不讲理的霸道。",
-                "字数": 28,
-                "声音拟音与音乐控制": "碗筷轻轻落桌声；BGM主旋律重新升起推向高潮",
-                "纯中文视频生成提示词": f"中景平缓慢移镜头。锁定的女主{char_name}轻轻放下筷子，面容带着极致满足的惬意浅笑，双目柔和深情，阳光与店内暖黄灯光在侧脸镀上一层金色光晕，周围食客笑语欢声，市井生活纪实电影感。"
-            },
-            {
-                "镜号": 8,
-                "时间": "39.0秒 - 45.0秒",
-                "时长": 6.0,
-                "阶段定位": "直视镜头对口型金句与评论区收尾",
-                "景别与运镜": "固定机位中近景平视对镜头直视",
-                "画面描述": f"女主{char_name}直接抬眸直视镜头，展现迷人自信眼神杀，口型严密对齐最后一句金句，话毕微扬下巴从容一笑，慢淡出。",
-                "参考帧继承策略": "继承第7镜末帧，精准对口型",
-                "旁白台词": "本地老饕在评论区集合，这家到底正不正宗？你敢来挑战吗？",
-                "字数": 26,
-                "声音拟音与音乐控制": "BGM重音落定收束，随画面慢慢优雅淡出",
-                "纯中文视频生成提示词": f"固定机位中近景直视镜头。锁定的女主{char_name}直接抬起明澈自信的双眸注视着摄像机镜头，嘴唇自然开合清晰说出收尾金句台词，面部表情灵动迷人，口型自然饱满完全对齐，语毕嘴角勾起一抹从容飒爽的浅笑，伴随画面平滑优雅慢淡出，4K电影画质。"
-            }
-        ],
-        "严苛负向约束": "严禁换脸、严禁变脸、严禁突变不同人、严禁塑料假脸、严禁过度磨皮失真、严禁动漫卡通画风、严禁假吃假嚼、严禁面无表情、严禁畸形手指、严禁多余四肢、严禁肢体变异、严禁西方人面孔、严禁夸张网红大浓妆、严禁低俗不雅姿势、严禁画面突然卡顿跳切、严禁画面闪烁撕裂、严禁画面模糊低分辨率、严禁背景突变。",
-        "爆款封面推荐": [
-            f"本地人打死不说的{food_name}！",
-            f"第一口直接把我吃沉默了",
-            f"长得最不起眼，下手最狠！"
-        ],
-        "爆款标题推荐": [
-            f"在本地吃{food_name}千万别说微辣！第一口直接把我吃沉默了",
-            f"别跟我提米其林！导航会骗你，但这家开了几十年的老店绝不会！",
-            f"舌头先投降胃跟着起义！美女老饕带你吃透真正的{food_name}灵魂",
-            f"看着最不起眼的小摊，下手往往最狠！这口滋味谁顶得住？",
-            f"如果你只能选一道菜代表家乡，它能不能排进前三？"
-        ],
-        "评论区互动引爆设计": f"本地老饕在评论区集合：这家店的{food_name}到底算几星水平？交出你们心里真正的私藏王牌据点！"
+        "storyboard": {
+            "total_shots": len(storyboard),
+            "target_duration": 45.0,
+            "aspect_ratio": "9:16",
+            "shots": storyboard
+        },
+        "shots": storyboard
     }
-    
-    # 如果提供了打磨后的完美剧本，则替换各分镜台词并重新计算字数
-    if custom_script_path:
-        custom_lines = load_custom_script(custom_script_path)
-        if custom_lines and len(custom_lines) >= 8:
-            print(f"✨ 正在注入大模型打磨后的完美剧本台词 ({len(custom_lines)} 句)...")
-            import re
-            for i in range(8):
-                new_text = custom_lines[i]
-                config["分镜列表"][i]["旁白台词"] = new_text
-                config["分镜列表"][i]["字数"] = len(re.sub(r'[，。！？、“”《》\s]', '', new_text))
-    
-    return config
+
+    if not output_path:
+        out_dir = os.path.join(WORKSPACE_ROOT, "examples")
+        os.makedirs(out_dir, exist_ok=True)
+        output_path = os.path.join(out_dir, f"{project_id}.json")
+
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(config, f, ensure_ascii=False, indent=2)
+
+    print(f"✨ [V2 全案生成成功] 已生成《{config['food_title']}》45秒动态工程配置！")
+    print(f"📁 配置文件: {output_path}")
+    print(f"👸 选定女主: {config['character']['女主姓名']} ({config['character']['风格定位']})")
+    print(f"🎯 核心角度: {angle['id']} - {angle['desc']}")
+    print(f"🪝 黄金钩子: {selected_hook}")
+    print(f"📝 旁白字数: {narration_data['total_chars']} 字 (标准区间: 120-155字)")
+    print(f"🎬 分镜数量: {len(storyboard)} 镜 (推荐 6 镜动态叙事)")
+    return config, output_path
 
 def main():
-    parser = argparse.ArgumentParser(description="生成 45 秒中华美食短视频工程配置 (纯中文版)")
-    parser.add_argument("--food", type=str, required=True, help="美食名称，如 '重庆火锅'")
-    parser.add_argument("--character", type=str, default=None, help="指定女主姓名或ID，如 '沈昭'、'林初薇'、'苏婉清'，留空则智能契合或随机")
-    parser.add_argument("--region", type=str, default="川渝", help="美食地域，如 '川渝'、'广东'、'西北'、'江浙'、'东北'")
-    parser.add_argument("--script-file", type=str, default=None, help="传入经 OpenAI/DeepSeek 打磨后的完美剧本台词文件路径")
-    parser.add_argument("--output", type=str, default=None, help="输出 JSON 配置文件路径")
-    
+    parser = argparse.ArgumentParser(description="中华美食短视频全案生成脚手架 (V2 动态工业版)")
+    parser.add_argument("--food", type=str, required=True, help="美食名称，如: 武汉热干面、上海生煎、淄博烧烤")
+    parser.add_argument("--city", type=str, default="", help="归属城市，如: 武汉、上海、淄博")
+    parser.add_argument("--character", type=str, default=None, help="指定女主姓名或风格标签，如: 沈昭、姜黎、御姐、港风")
+    parser.add_argument("--out", type=str, default=None, help="自定义输出 JSON 路径")
     args = parser.parse_args()
-    config = create_food_project(args.food, args.character, args.region, args.script_file)
-    
-    out_path = args.output
-    if not out_path:
-        out_path = f"{args.food.replace(' ', '_')}_45秒全案.json"
-    
-    os.makedirs(os.path.dirname(os.path.abspath(out_path)), exist_ok=True)
-    with open(out_path, "w", encoding="utf-8") as f:
-        json.dump(config, f, ensure_ascii=False, indent=2)
-    
-    print(f"✅ 成功生成 100% 纯中文短视频工程配置: {out_path}")
-    print(f"🍜 美食主题: {config['美食主题']} ({config['归属地域']})")
-    print(f"👑 出镜女主: {config['出镜女主设定']['女主姓名']} ({config['出镜女主设定']['风格定位']}) [全片8镜严格锁定，绝不换脸]")
-    print(f"🎵 抖音中文BGM: {config['抖音爆款背景音乐配置']['推荐中文曲目']}")
+
+    create_v2_project(args.food, city=args.city, character_query=args.character, output_path=args.out)
 
 if __name__ == "__main__":
     main()

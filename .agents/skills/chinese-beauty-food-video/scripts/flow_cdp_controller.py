@@ -1,14 +1,11 @@
 #!/usr/bin/env python3
 """
-中华美食短视频 Google Flow (Veo) Chrome CDP + Playwright 通用自动化控制器 (工业升级版)
-- 100% 纯中文提示词、日志与分镜驱动
-- 复用本地已登录 Google Ultra 账户的 Chrome 浏览器实例 (localhost:9222)
-- 黄金3秒美女与美食双爆钩子 + 全片单向递进叙事流
-- 全分镜强制锁定女主专属容貌与特定服饰前缀，彻底封杀变脸与换衣服
-- 自动设置 9:16 竖屏高画质
-- 原生剪贴板毫秒级注入起跑首帧 (Image-to-Video 锚点)
-- 实时监听云端渲染进度 (0%~100%) 并精准抓取最新生成的视频下载
-- OpenCV 毫秒级提取视频末帧供后续分镜连环继承
+中华美食短视频 Google Flow (Veo) Chrome CDP + Playwright 通用自动化控制器 (V2 动态工业版)
+- 动态分镜支持 (不硬编码分镜数量，支持 5-7 镜动态规划)
+- 严格遵循 V2 Continuity Router (连续性决策路由，拒绝无脑链式继承)
+- 人物 Reference Anchor 简明锁定，杜绝冗长文本干扰食物与动作注意力
+- 复用本地 Chrome 调试端口 (localhost:9222)，稳健 UI 自动化交互
+- 毫秒级提取视频末帧与智能关键帧分发
 """
 
 import os
@@ -19,8 +16,10 @@ import argparse
 import subprocess
 import urllib.request
 import shutil
-import tempfile
-import cv2
+try:
+    import cv2
+except ImportError:
+    cv2 = None
 
 os.environ["no_proxy"] = "localhost,127.0.0.1,*"
 os.environ["NO_PROXY"] = "localhost,127.0.0.1,*"
@@ -28,7 +27,10 @@ os.environ["NO_PROXY"] = "localhost,127.0.0.1,*"
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(line_buffering=True)
 
-from playwright.sync_api import sync_playwright
+try:
+    from playwright.sync_api import sync_playwright
+except ImportError:
+    sync_playwright = None
 
 WORKSPACE_ROOT = "/Users/shuozheng/Documents/meinv"
 DEFAULT_CONFIG_PATH = os.path.join(WORKSPACE_ROOT, "examples", "zibo_shaokao_45s.json")
@@ -57,7 +59,7 @@ def resolve_workspace_path(path):
     return os.path.normpath(os.path.join(WORKSPACE_ROOT, path))
 
 def load_food_config(config_path):
-    """加载并标准化美食短视频配置文件 (全面兼容纯中文键名)"""
+    """加载并标准化美食短视频配置文件 (兼容 V1 与 V2 动态数据格式)"""
     target_path = resolve_workspace_path(config_path)
     if not os.path.exists(target_path):
         alt_path = os.path.join(WORKSPACE_ROOT, "examples", os.path.basename(config_path))
@@ -69,24 +71,31 @@ def load_food_config(config_path):
     with open(target_path, "r", encoding="utf-8") as f:
         raw_config = json.load(f)
 
-    project_id = raw_config.get("项目编号") or raw_config.get("project_id", "food_video")
-    food_title = raw_config.get("美食主题") or raw_config.get("food_title", "中华美食")
+    project_id = raw_config.get("项目编号") or raw_config.get("project_id") or raw_config.get("title", "food_video")
+    food_title = raw_config.get("美食主题") or raw_config.get("food_title") or raw_config.get("title", "中华美食")
+    
+    # 提取角色设定与主图
     character_info = raw_config.get("出镜女主设定") or raw_config.get("character", {})
     master_photo = resolve_workspace_path(
-        character_info.get("定妆原图路径") or character_info.get("photo_path", "")
+        character_info.get("定妆原图路径") or character_info.get("photo_path") or raw_config.get("character_reference", "")
     )
+    food_ref = resolve_workspace_path(raw_config.get("food_reference", ""))
+    scene_ref = resolve_workspace_path(raw_config.get("scene_reference", ""))
 
-    raw_shots = raw_config.get("分镜列表") or raw_config.get("shots", [])
+    # 提取分镜列表 (支持 shots / 分镜列表 / storyboard.shots)
+    storyboard = raw_config.get("storyboard", {})
+    raw_shots = raw_config.get("分镜列表") or raw_config.get("shots") or storyboard.get("shots", [])
     normalized_shots = []
 
-    for s in raw_shots:
-        shot_id = s.get("镜号") or s.get("id")
-        title = s.get("阶段定位") or s.get("title", f"分镜 {shot_id}")
+    for idx, s in enumerate(raw_shots, start=1):
+        shot_id = s.get("镜号") or s.get("id") or idx
+        title = s.get("阶段定位") or s.get("function") or s.get("title", f"Shot {shot_id}")
         prompt = s.get("纯中文视频生成提示词") or s.get("prompt", "")
-        ref_strategy = s.get("参考帧继承策略") or s.get("reference_strategy", "")
-        duration = float(s.get("时长") or s.get("duration", 6.0))
-        dialogue = s.get("旁白台词") or s.get("dialogue", "")
+        ref_strategy = s.get("参考帧继承策略") or s.get("reference_strategy") or s.get("ref_strategy", "")
+        duration = float(s.get("时长") or (float(s.get("end", 6.0)) - float(s.get("start", 0.0))) if "start" in s and "end" in s else s.get("duration", 6.0))
+        dialogue = s.get("旁白台词") or s.get("narration") or s.get("dialogue", "")
         audio_notes = s.get("声音拟音与音乐控制") or s.get("audio_notes", "")
+        focus = s.get("focus", "")
 
         filename = f"{project_id}_shot{shot_id}.mp4"
         video_path = os.path.join(OUTPUT_VIDEOS_DIR, filename)
@@ -100,6 +109,7 @@ def load_food_config(config_path):
             "title": title,
             "prompt": prompt,
             "ref_strategy": ref_strategy,
+            "focus": focus,
             "duration": duration,
             "dialogue": dialogue,
             "audio_notes": audio_notes,
@@ -107,7 +117,9 @@ def load_food_config(config_path):
             "video_path": video_path,
             "last_frame": last_frame,
             "initial_image": initial_image,
-            "master_photo": master_photo
+            "master_photo": master_photo,
+            "food_ref": food_ref,
+            "scene_ref": scene_ref
         })
 
     config = {
@@ -115,6 +127,8 @@ def load_food_config(config_path):
         "food_title": food_title,
         "character": character_info,
         "master_photo": master_photo,
+        "food_ref": food_ref,
+        "scene_ref": scene_ref,
         "shots": normalized_shots,
         "raw_config": raw_config
     }
@@ -239,128 +253,59 @@ def clear_prompt_box(page):
     pm = page.locator("div.ProseMirror")
     if pm.count() == 0:
         return
-    clear_btn = page.locator('button[aria-label="Clear prompt"]')
-    if clear_btn.is_visible():
-        clear_btn.click(force=True)
-        page.wait_for_timeout(300)
-    else:
-        pm.click(force=True)
-        page.keyboard.press("Meta+a")
-        page.keyboard.press("Backspace")
-        page.wait_for_timeout(200)
+    pm.click(force=True)
+    page.wait_for_timeout(100)
+    page.keyboard.press("Meta+a")
+    page.keyboard.press("Backspace")
+    page.wait_for_timeout(100)
 
-def wait_and_download_video(page, shot_id, output_path, timeout=360, prev_error_count=0):
-    """监听分镜渲染进度，并自动抓取最新生成的视频下载"""
-    print(f"⏳ 正在监听分镜 [{shot_id}] 的云端渲染进度 (最长等待: {timeout}秒)...")
+    # 移除可能残留的已附加图片 chip
+    chips = page.locator('flow-prompt-attachment, .attachment-chip, button[aria-label*="Remove image"], button[aria-label*="Delete image"]')
+    for i in range(chips.count()):
+        try:
+            chips.nth(i).click(force=True, timeout=500)
+            page.wait_for_timeout(100)
+        except Exception:
+            pass
+
+def wait_for_generation_complete(page, shot_id, timeout=300):
+    """实时监听云端渲染进度 (0%~100%) 并精准抓取最新生成的视频"""
+    print(f"⏳ 开始监听分镜 [{shot_id}] 生成状态 (最大等待: {timeout}秒)...")
     start_time = time.time()
-    last_reported_status = ""
-    had_progress = False
+    last_pct = -1
 
     while time.time() - start_time < timeout:
-        try:
-            policy_toast = page.locator('.mat-mdc-snack-bar-container:has-text("violate"), [role="alert"]:has-text("violate")')
-            if policy_toast.count() > 0 and policy_toast.first.is_visible():
-                print(f"\n❌ 分镜 [{shot_id}] 触发 Google Flow 实时政策拦截: {policy_toast.first.inner_text(timeout=500)}")
-                return False
-        except Exception:
-            pass
+        elapsed = int(time.time() - start_time)
 
-        try:
-            err_tiles = page.locator('flow-error-tile, .error-tile, [role="alert"]:has-text("failed")')
-            if err_tiles.count() > prev_error_count:
-                err_text = err_tiles.last.inner_text(timeout=500).strip().replace('\n', ' ')
-                print(f"\n❌ 分镜 [{shot_id}] 云端生成遇到偶发故障: {err_text}")
-                return False
-        except Exception:
-            pass
+        # 检查错误警告
+        error_tiles = page.locator('flow-error-tile, .error-tile, [role="alert"]:has-text("failed")')
+        if error_tiles.count() > 0 and error_tiles.first.is_visible():
+            err_text = error_tiles.first.inner_text().strip()
+            print(f"❌ 检测到生成报错: {err_text}")
+            return False
 
-        progress_nodes = page.locator("text=/%/").all()
-        current_pct = None
-        for pn in progress_nodes:
-            try:
-                txt = pn.inner_text(timeout=500).strip()
-                if "%" in txt and len(txt) <= 6:
-                    current_pct = txt
-                    had_progress = True
-                    if txt != last_reported_status:
-                        print(f"  📊 分镜 [{shot_id}] 渲染进度: {txt}")
-                        last_reported_status = txt
-            except Exception:
-                pass
-
-        # 当进度达到 100% 或进度消失后进入下载
-        if current_pct == "100%" or (had_progress and not current_pct):
-            print(f"\n🎉 分镜 [{shot_id}] 渲染完毕，准备精准获取最新生成的视频...")
-            time.sleep(2)
-            dismiss_overlays(page)
-
-            # 点击最左上角第一张最新卡片打开全屏详情播放器
-            first_tile = page.locator('flow-video-tile, div:has(> img[src*="flow-content"]), div:has(> img[src*="/asb/"])').first
-            if first_tile.is_visible():
+        # 读取进度百分比
+        pct_locators = page.locator('.progress-text, [aria-valuenow], span:has-text("%")')
+        for i in range(pct_locators.count()):
+            txt = pct_locators.nth(i).inner_text().strip()
+            if "%" in txt:
                 try:
-                    first_tile.click(force=True)
-                    time.sleep(2)
+                    num = int(txt.replace("%", "").strip())
+                    if num != last_pct:
+                        print(f"  📈 云端生成进度: {num}% (已耗时 {elapsed}秒)")
+                        last_pct = num
                 except Exception:
                     pass
 
-            # 优先从详情播放器的 video 标签提取高清直链
-            for v in page.locator("video").all():
-                src = v.get_attribute("src")
-                if src and src.startswith("http"):
-                    print(f"🎉 捕捉到分镜 [{shot_id}] 详情播放器高清直链!")
-                    resp = page.request.get(src)
-                    if resp.status == 200 and len(resp.body()) > 50000:
-                        with open(output_path, "wb") as f:
-                            f.write(resp.body())
-                        file_mb = len(resp.body()) / (1024 * 1024)
-                        print(f"✅ 分镜 [{shot_id}] 视频下载完成！文件大小: {file_mb:.2f} MB")
-                        done_btn = page.locator('button:has-text("Done"), button[aria-label="Back"]').first
-                        if done_btn.is_visible():
-                            done_btn.click()
-                        else:
-                            page.keyboard.press("Escape")
-                        return True
+        # 检查视频就绪
+        completed_videos = page.locator("flow-generation-tile video, .generation-result video, video[src*='blob:']")
+        if completed_videos.count() > 0:
+            first_vid = completed_videos.first
+            if first_vid.is_visible():
+                print(f"🎉 分镜 [{shot_id}] 视频渲染完成！(总耗时 {elapsed}秒)")
+                return True
 
-            # 备选：通过详情顶栏的 720p 菜单下载
-            temp_dl_dir = tempfile.mkdtemp(prefix=f"flow_dl_{shot_id}_")
-            try:
-                cdp = page.context.new_cdp_session(page)
-                cdp.send("Page.setDownloadBehavior", {
-                    "behavior": "allow",
-                    "downloadPath": temp_dl_dir
-                })
-                dl_btn = page.locator('button[aria-label="Download media"], button[aria-label="Download"]').first
-                if dl_btn.is_visible():
-                    dl_btn.click()
-                    time.sleep(0.5)
-                    btn_720 = page.locator('.cdk-overlay-container button:has-text("720p"), .cdk-overlay-container [role="menuitem"]:has-text("720p")').first
-                    if btn_720.is_visible():
-                        btn_720.click()
-                        for _ in range(45):
-                            time.sleep(1)
-                            files = [f for f in os.listdir(temp_dl_dir) if f.endswith(".mp4") and not f.endswith(".crdownload")]
-                            if files:
-                                downloaded = os.path.join(temp_dl_dir, files[0])
-                                if os.path.getsize(downloaded) > 100000:
-                                    shutil.move(downloaded, output_path)
-                                    print(f"✅ 分镜 [{shot_id}] 视频通过 720p 菜单下载完成！文件大小: {os.path.getsize(output_path)/1024/1024:.2f} MB")
-                                    done_btn = page.locator('button:has-text("Done"), button[aria-label="Back"]').first
-                                    if done_btn.is_visible():
-                                        done_btn.click()
-                                    else:
-                                        page.keyboard.press("Escape")
-                                    return True
-            except Exception as e:
-                print(f"  ℹ️ 下载通道提示: {e}")
-            finally:
-                if os.path.exists(temp_dl_dir):
-                    shutil.rmtree(temp_dl_dir, ignore_errors=True)
-            done_btn = page.locator('button:has-text("Done"), button[aria-label="Back"]').first
-            if done_btn.is_visible():
-                done_btn.click()
-            else:
-                page.keyboard.press("Escape")
-
+        dismiss_overlays(page)
         time.sleep(3)
 
     print(f"\n⏰ 分镜 [{shot_id}] 等待渲染超时 ({timeout}秒)")
@@ -368,86 +313,110 @@ def wait_and_download_video(page, shot_id, output_path, timeout=360, prev_error_
 
 def determine_start_frame(shot_data, all_shots, config):
     """
-    智能解析分镜的首帧继承逻辑：
+    V2 Continuity Router (连续性决策路由):
+    严禁无脑链式末帧继承。根据 reference_strategy 或构图与焦点智能分配参考锚点：
     1. 显式指定的 initial_image 拥有最高优先级；
-    2. 分镜 1 属于【黄金 3 秒美女首击抓人钩子】，强制使用女主基准定妆原图，确保开场即惊艳；
-    3. 分镜 2 优先继承分镜 1 末帧，若无则回溯定妆原图；
-    4. 分镜 6 触发【空镜重定向锚定准则 (Re-anchor Rule)】：回溯锁定分镜 1/2 女主末帧，严禁继承分镜 5 的无脸特写；
-    5. 其余常规分镜默认继承前序分镜 (N-1) 的最后一帧。
+    2. ref_strategy 声明为 'character' / 'character_reference' / '定妆原图'：使用女主专属定妆原图；
+    3. ref_strategy 声明为 'food' / 'food_reference'：使用美食参考图（若无则纯文字驱动）；
+    4. ref_strategy 声明为 'scene' / 'scene_reference'：使用场景参考图；
+    5. ref_strategy 声明为 'previous_frame' / 'previous_last_frame' / '继承前一镜'：
+       仅在动作连续且构图相近时继承前一镜 (N-1) 末帧；
+    6. ref_strategy 声明为 'reanchor_character' / '重定向' / '回溯'：
+       回溯锁定最近一个出镜人物镜头末帧或定妆原图，规避无脸特写污染；
+    7. 默认路由：Shot 1 默认锁定女主定妆原图；其余镜头根据焦点自适应。
     """
     shot_id = shot_data["id"]
-    ref_strategy = shot_data.get("ref_strategy", "")
+    ref_strategy = str(shot_data.get("ref_strategy", "")).lower()
+    focus = str(shot_data.get("focus", "")).lower()
     explicit_image = shot_data.get("initial_image")
 
+    # 1. 显式指定
     if explicit_image and os.path.exists(explicit_image):
         print(f"📌 [显式首帧] 分镜 [{shot_id}] 使用显式指定首帧: {os.path.basename(explicit_image)}")
         return explicit_image
 
     master = config.get("master_photo")
+    food_ref = config.get("food_ref")
+    scene_ref = config.get("scene_ref")
 
-    # 分镜 1：黄金 3 秒美女首击抓人钩子，强制锁定女主专属定妆原图
-    if shot_id == 1:
+    # 2. Shot 1 或明确指定角色参考
+    if shot_id == 1 or "character" in ref_strategy or "定妆" in ref_strategy:
         if master and os.path.exists(master):
-            print(f"🌟 [黄金钩子定妆锚定] 分镜 [1] 强锁定女主专属定妆原图: {os.path.basename(master)}")
+            print(f"🌟 [人物锚定 Router] 分镜 [{shot_id}] 锁定女主专属定妆参考图: {os.path.basename(master)}")
             return master
 
-    # 分镜 2：优先继承第 1 镜末帧，若不存在则回溯女主定妆照
-    if shot_id == 2:
-        shot1 = next((s for s in all_shots if s["id"] == 1), None)
-        if shot1 and os.path.exists(shot1["last_frame"]):
-            print(f"🔗 [连环继承] 分镜 [2] 继承分镜 [1] 咬下后末帧: {os.path.basename(shot1['last_frame'])}")
-            return shot1["last_frame"]
+    # 3. 明确指定美食参考图
+    if "food" in ref_strategy or ("food" in focus and "character" not in focus):
+        if food_ref and os.path.exists(food_ref):
+            print(f"🍲 [美食锚定 Router] 分镜 [{shot_id}] 锁定美食专属参考图: {os.path.basename(food_ref)}")
+            return food_ref
+
+    # 4. 明确指定场景参考图
+    if "scene" in ref_strategy or "环境" in ref_strategy:
+        if scene_ref and os.path.exists(scene_ref):
+            print(f"🏮 [场景锚定 Router] 分镜 [{shot_id}] 锁定场景参考图: {os.path.basename(scene_ref)}")
+            return scene_ref
+
+    # 5. 回溯重定向锚定人物
+    if "reanchor" in ref_strategy or "重定向" in ref_strategy or "回溯" in ref_strategy:
+        # 向前寻找最近一个有末帧的人物分镜
+        for prev in reversed(all_shots[:shot_id - 1]):
+            if prev.get("last_frame") and os.path.exists(prev["last_frame"]):
+                # 若前序镜头为人物出镜
+                if "character" in str(prev.get("focus", "")).lower() or "女主" in str(prev.get("prompt", "")):
+                    print(f"🔄 [重定向锚定 Router] 分镜 [{shot_id}] 回溯锁定分镜 [{prev['id']}] 人物末帧: {os.path.basename(prev['last_frame'])}")
+                    return prev["last_frame"]
         if master and os.path.exists(master):
-            print(f"🌟 [女主定妆锚定] 分镜 [2] 回溯锁定女主专属定妆原图: {os.path.basename(master)}")
+            print(f"🔄 [重定向锚定 Router] 分镜 [{shot_id}] 回溯锁定女主定妆原图: {os.path.basename(master)}")
             return master
 
-    # 分镜 6：【重定向锚定准则 (Re-anchor Rule)】
-    if shot_id == 6 or "重定向" in ref_strategy or "回溯" in ref_strategy:
-        # 优先回溯到第 1 镜或第 2 镜女主面部末帧
-        for candidate_id in [2, 1]:
-            cand_shot = next((s for s in all_shots if s["id"] == candidate_id), None)
-            if cand_shot and os.path.exists(cand_shot["last_frame"]):
-                print(f"🔄 [重定向锚定准则] 分镜 [{shot_id}] 回溯锁定分镜 [{candidate_id}] 女主面部末帧: {os.path.basename(cand_shot['last_frame'])} (规避无脸特写污染)")
-                return cand_shot["last_frame"]
+    # 6. 相邻连续动作 (previous_frame)
+    if "previous" in ref_strategy or "继承" in ref_strategy or "last_frame" in ref_strategy:
+        prev_shot = next((s for s in all_shots if s["id"] == shot_id - 1), None)
+        if prev_shot:
+            prev_last_frame = prev_shot["last_frame"]
+            if not os.path.exists(prev_last_frame):
+                prev_video = prev_shot["video_path"]
+                if os.path.exists(prev_video):
+                    print(f"🔄 提取前序分镜 [{prev_shot['id']}] 最后一帧...")
+                    extract_last_frame(prev_video, prev_last_frame)
+            if os.path.exists(prev_last_frame):
+                print(f"🔗 [连续性 Router] 分镜 [{shot_id}] 动作连续继承前一镜 [{prev_shot['id']}] 末帧: {os.path.basename(prev_last_frame)}")
+                return prev_last_frame
+
+    # 7. 默认自适应路由
+    if "character" in focus or any(kw in shot_data.get("prompt", "") for kw in ["女主", "美女", "吃", "咽下", "喝", "品尝"]):
         if master and os.path.exists(master):
-            print(f"🔄 [重定向锚定准则] 分镜 [{shot_id}] 回溯锁定女主定妆原图: {os.path.basename(master)}")
+            print(f"👸 [自适应人物 Router] 分镜 [{shot_id}] 使用女主定妆参考图: {os.path.basename(master)}")
             return master
 
-    # 常规镜头：继承前一镜头末帧
-    prev_shot = next((s for s in all_shots if s["id"] == shot_id - 1), None)
-    if prev_shot:
-        prev_last_frame = prev_shot["last_frame"]
-        if not os.path.exists(prev_last_frame):
-            prev_video = prev_shot["video_path"]
-            if os.path.exists(prev_video):
-                print(f"🔄 检测到前序分镜 [{prev_shot['id']}] 视频已存在，正在提取末帧...")
-                extract_last_frame(prev_video, prev_last_frame)
-            else:
-                print(f"❌ 前序分镜 [{prev_shot['id']}] 尚未生成，无法连环继承！")
-                return None
-        if os.path.exists(prev_last_frame):
-            print(f"🔗 [连环继承] 分镜 [{shot_id}] 继承前一镜 [{prev_shot['id']}] 末帧: {os.path.basename(prev_last_frame)}")
-            return prev_last_frame
-
+    print(f"ℹ️ [纯文本驱动] 分镜 [{shot_id}] 无起跑首帧图片，执行 Text-to-Video。")
     return None
 
 def build_locked_prompt(shot_data, config):
-    """确保提示词中强制注入女主完整外貌与特定衣着前缀，封杀变脸与换衣服"""
+    """
+    V2 结构化提示词构建器：
+    1. Reference > 长篇文字重复描写，不浪费 token；
+    2. 人物出镜时注入简明强效锚定：
+       '严格保持与人物参考图完全相同的中国女性：保持相同面部身份、五官、发型、妆容、服装和饰品，不改变服装和饰品。'
+    3. 视觉注意力重心：食物 40%、人物 25%、动作 20%、摄影环境 15%；
+    4. 负向约束拦截后置注入。
+    """
     base_prompt = shot_data["prompt"]
     character_info = config["character"]
     character_name = character_info.get("女主姓名", "女主")
-    visual_traits = character_info.get("身材与面貌特征") or character_info.get("visual_traits", "")
 
-    # 检查是否已包含强制锁定前缀
-    if "【锁定出镜人物】" not in base_prompt and "【锁定女主】" not in base_prompt:
-        # 仅对人物相关分镜注入（非纯食材微距镜头）
-        if any(kw in base_prompt for kw in [character_name, "美女", "双手", "吃", "咽下", "喝", "直视", "眼神"]):
-            prefix = f"【锁定出镜人物】：20岁中国美女{character_name}，{visual_traits}。全片严格保持同一人，严禁变脸，严禁更换衣服。"
-            base_prompt = f"{prefix} {base_prompt}"
+    # 判断是否为人物出镜分镜
+    has_character = any(kw in base_prompt for kw in [character_name, "女主", "美女", "她", "双手", "吃", "咽下", "喝", "品尝", "对视", "眼神"])
 
-    # 统一附带严苛负向约束后置拦截
-    neg_block = " 严禁更换衣服，严禁白衬衫，严禁散发，严禁长直发，严禁头顶光环，严禁胸前麦克风，严禁变脸，严禁塑料假脸。"
-    if "严禁更换衣服" not in base_prompt:
+    if has_character:
+        anchor_prefix = "严格保持与人物参考图完全相同的中国女性：保持相同面部身份、五官、发型、妆容、服装和饰品，不改变服装和饰品。"
+        if "严格保持与人物参考图" not in base_prompt:
+            base_prompt = f"{anchor_prefix} {base_prompt}"
+
+    # V2 严苛负向约束
+    neg_block = " 禁止换脸，禁止更换衣服，禁止额外手指，禁止食物漂浮，禁止夸张网红表情，禁止塑料假脸，禁止头顶光环，禁止胸前麦克风。"
+    if "禁止换脸" not in base_prompt and "严禁换脸" not in base_prompt:
         base_prompt += neg_block
 
     return base_prompt
@@ -459,7 +428,6 @@ def inject_and_generate(page, shot_data, all_shots, config, dry_run=False, auto_
     output_path = shot_data["video_path"]
     last_frame_path = shot_data["last_frame"]
 
-    # 构建锁定外貌与服饰的终极纯中文提示词
     locked_prompt = build_locked_prompt(shot_data, config)
 
     print(f"\n==================================================")
@@ -472,7 +440,7 @@ def inject_and_generate(page, shot_data, all_shots, config, dry_run=False, auto_
     max_attempts = 3
     for attempt in range(1, max_attempts + 1):
         if attempt > 1:
-            print(f"\n🔄 [自动重试机制] 分镜 [{shot_id}] 正在执行第 {attempt}/{max_attempts} 次重试...")
+            print(f"\n🔄 [自动重试] 分镜 [{shot_id}] 正在执行第 {attempt}/{max_attempts} 次尝试...")
             time.sleep(2)
             dismiss_overlays(page)
 
@@ -491,7 +459,6 @@ def inject_and_generate(page, shot_data, all_shots, config, dry_run=False, auto_
 
         dismiss_overlays(page)
         ensure_aspect_ratio_9_16(page)
-        prev_error_count = page.locator('flow-error-tile, .error-tile, [role="alert"]:has-text("failed")').count()
 
         # 1. 定位并清空输入框
         pm = page.locator("div.ProseMirror")
@@ -506,63 +473,72 @@ def inject_and_generate(page, shot_data, all_shots, config, dry_run=False, auto_
 
         # 2. 注入起跑首帧 (Image-to-Video 核心)
         if image and os.path.exists(image):
-            print(f"📷 正在强注入起跑首帧 (Image-to-Video 锚点): {os.path.basename(image)}")
+            print(f"📷 正在注入参考首帧: {os.path.basename(image)}")
             if copy_image_to_clipboard(image):
                 pm.click(force=True)
                 page.keyboard.press("Meta+v")
-                print("  ✅ 首帧已粘贴至提示词框，等待云端解析 (3秒)...")
+                print("  ✅ 参考图已粘贴至输入框，等待云端解析 (3秒)...")
                 page.wait_for_timeout(3000)
-        else:
-            print(f"ℹ️ 分镜 [{shot_id}] 无起跑首帧图片，执行 Text-to-Video。")
 
-        # 3. 注入纯中文 Prompt
-        print(f"📝 正在注入锁定外貌与服饰的纯中文连续运镜提示词 ({len(locked_prompt)} 字)...")
+        # 3. 注入结构化提示词
+        print(f"📝 注入提示词 ({len(locked_prompt)} 字)...")
         dismiss_overlays(page)
         pm.click(force=True)
+        page.wait_for_timeout(200)
         page.keyboard.type(locked_prompt, delay=5)
-        page.wait_for_timeout(1000)
-        print("  ✅ 提示词注入完成！")
+        page.wait_for_timeout(800)
 
         if dry_run:
-            print("🔍 [Dry-Run 预览模式] 不触发实际点击生成按钮。")
+            print(f"🔍 [Dry-Run 模式] 分镜 [{shot_id}] 提示词与参考图填充完成，跳过生成。")
             return True
 
-        # 4. 点击生成按钮
-        gen_btn = page.locator('button[aria-label="Start generation"], button.generate-icon-button, button:has(mat-icon:has-text("arrow_forward"))').last
+        # 4. 点击生成
+        gen_btn = page.locator('button:has-text("Generate"), button[aria-label*="Generate"], button.generate-button').first
         if gen_btn.is_visible() and gen_btn.is_enabled():
-            print("🚀 点击生成按钮 (Start generation)...")
+            print("🚀 正在触发云端视频生成...")
             gen_btn.click(force=True)
-            print(f"  🎉 分镜 [{shot_id}] 已成功提交至 Google Flow 云端渲染！")
-            page.wait_for_timeout(3000)
+            page.wait_for_timeout(1000)
         else:
-            print("⚠️ 生成按钮当前不可用，请检查页面状态。")
-            if attempt < max_attempts:
-                continue
-            return False
+            page.keyboard.press("Enter")
+            page.wait_for_timeout(1000)
 
-        # 5. 监听下载并提取最后一帧
+        # 5. 监听生成与下载
         if auto_download:
-            ok = wait_and_download_video(page, shot_id, output_path, prev_error_count=prev_error_count)
+            ok = wait_for_generation_complete(page, shot_id)
             if ok:
-                extract_last_frame(output_path, last_frame_path)
-                if "/edit/" in page.url:
-                    base_url = page.url.split("/edit/")[0]
-                    page.goto(base_url, wait_until="networkidle")
+                time.sleep(2)
+                # 尝试抓取视频 URL 或通过下载按钮下载
+                vid_el = page.locator("flow-generation-tile video, .generation-result video, video[src*='blob:']").first
+                if vid_el.is_visible():
+                    # 优先点击下载按钮
+                    download_btn = page.locator('button[aria-label*="Download"], button:has(mat-icon:has-text("download"))').first
+                    if download_btn.is_visible():
+                        with page.expect_download(timeout=15000) as download_info:
+                            download_btn.click(force=True)
+                        download = download_info.value
+                        download.save_as(output_path)
+                        print(f"💾 成功下载视频至: {output_path}")
+                    else:
+                        print(f"⚠️ 未找到显式下载按钮，分镜 [{shot_id}] 生成完成。")
+
+                if os.path.exists(output_path):
+                    extract_last_frame(output_path, last_frame_path)
                 return True
             else:
                 if attempt < max_attempts:
-                    print(f"⚠️ 分镜 [{shot_id}] 本次尝试未成功，2秒后自动进入重试...")
+                    print(f"⚠️ 分镜 [{shot_id}] 尝试失败，进入重试...")
                     time.sleep(2)
                     continue
                 return False
-        return True
+
+    return True
 
 def main():
-    parser = argparse.ArgumentParser(description="Google Flow Chrome CDP 中华美食短视频自动化控制器")
+    parser = argparse.ArgumentParser(description="Google Flow Chrome CDP 中华美食短视频自动化控制器 (V2 动态版)")
     parser.add_argument("--config", type=str, default=DEFAULT_CONFIG_PATH, help="美食视频分镜配置文件路径 (JSON)")
-    parser.add_argument("--shot", type=int, help="指定生成单个镜头 (1-8)")
+    parser.add_argument("--shot", type=int, help="指定生成单个镜头 (1~N)")
     parser.add_argument("--from-shot", type=int, default=1, help="从指定镜头开始往后连续生成")
-    parser.add_argument("--all", action="store_true", help="连续批量连环提交并自动继承下载所有分镜")
+    parser.add_argument("--all", action="store_true", help="连续批量连环提交并自动继承下载所有规划分镜")
     parser.add_argument("--list", action="store_true", help="列出当前配置的所有分镜清单与就绪状态")
     parser.add_argument("--dry-run", action="store_true", help="仅填充提示词与首帧图片，不触发点击生成")
     parser.add_argument("--no-download", action="store_true", help="仅提交生成，不阻塞等待下载")
@@ -576,14 +552,14 @@ def main():
     shots = config["shots"]
 
     print(f"🥢 已加载美食全案: 《{food_title}》 (项目编号: {project_id})")
-    print(f"👸 出镜女主: {character_name} | 配置文件: {resolved_config_path}")
+    print(f"👸 出镜女主: {character_name} | 总分镜数: {len(shots)} | 配置文件: {resolved_config_path}")
 
     if args.list:
         print(f"\n📜 《{food_title}》全片 {len(shots)} 镜头制作清单与状态：")
         for s in shots:
             video_ok = "✅已就绪" if os.path.exists(s["video_path"]) else "⏳待生成"
             frame_ok = "✅有末帧" if os.path.exists(s["last_frame"]) else "⚪无末帧"
-            print(f"[{s['id']}] {s['title']} | 时长: {s['duration']}s | 视频: {video_ok} | 末帧: {frame_ok}")
+            print(f"[{s['id']}] {s['title']} | 时长: {s['duration']}s | 焦点: {s.get('focus', 'auto')} | 视频: {video_ok} | 末帧: {frame_ok}")
         return
 
     cdp_url = f"http://127.0.0.1:{args.port}"
@@ -611,7 +587,7 @@ def main():
             if args.shot:
                 target_shot = next((s for s in shots if s["id"] == args.shot), None)
                 if not target_shot:
-                    print(f"❌ 找不到分镜 [{args.shot}]")
+                    print(f"❌ 找不到分镜 [{args.shot}] (当前工程共有 {len(shots)} 镜)")
                     return
                 inject_and_generate(page, target_shot, shots, config, dry_run=args.dry_run, auto_download=auto_download)
             elif args.all:
@@ -626,7 +602,7 @@ def main():
                         continue
                     ok = inject_and_generate(page, s, shots, config, dry_run=args.dry_run, auto_download=auto_download)
                     if not ok:
-                        print(f"⚠️ 分镜 [{s['id']}] 连环中断，请排查原因。")
+                        print(f"⚠️ 分镜 [{s['id']}] 执行中断，请排查原因。")
                         break
                     print("⏳ 本镜完成，3 秒后进入下一连环镜头...")
                     time.sleep(3)

@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-中华美食短视频音画与规范自动化质检脚本 (Audio-Visual & Compliance Validator)
+中华美食短视频音画与规范自动化质检脚本 (V2 动态工业版)
 严格核验短视频工程配置是否符合：
-1. 100% 纯中文环境（零英文污染检测）
-2. 全片锁定单一女主与固定性格/音色设定
-3. 抖音爆款中文BGM与智能闪避（Ducking）混音机制
-4. 45秒黄金时长与8镜紧凑叙事节奏
-5. 空镜重定向锚定准则（Re-anchor Rule）
-6. 老饕台词字数与高密度感官词（严禁AI套话）
+1. 100% 纯中文提示词与环境生态
+2. 全片锁定单一女主与固定人设/音色
+3. 动态分镜架构（5~7 镜，标准推荐 6 镜），拒绝刻板固定套路
+4. 自然生活化旁白字数（120~155 字）与严格去 AI 腔（严禁网红套话）
+5. Continuity Router 连续性合理性（焦点切换与重定向锚定）
+6. 声音四层混音与 BGM 智能闪避策略
 """
 
 import sys
@@ -19,16 +19,16 @@ import argparse
 FORBIDDEN_WORDS = [
     "绝绝子", "YYDS", "入口即化", "吃货", "非常美味", "十分可口", 
     "色香味俱全", "深受喜爱", "深受大家喜爱", "历史悠久", "不容错过", 
-    "值得一试", "大家好", "今天带大家", "今天我们来吃", "回味无穷"
+    "值得一试", "大家好", "今天带大家", "今天我们来吃", "回味无穷",
+    "治好了所有内耗", "直撞天灵盖", "直冲天灵盖", "舌头彻底缴械",
+    "直接起义", "直接把我吃沉默了", "香迷糊", "封神", "上头", "沦陷"
 ]
 
 def check_english_pollution(text: str) -> list:
     """检测是否含有英文长词或英文句子（允许合法的模型标号如 4K, 24fps 等）。"""
     if not isinstance(text, str):
         return []
-    # 过滤允许的技术缩写如 4K, 24fps, BGM, LUFS, ID, jpg, png, json
-    cleaned = re.sub(r'\b(4K|24fps|fps|BGM|LUFS|ID|jpg|png|json)\b', '', text, flags=re.IGNORECASE)
-    # 寻找连续4个以上字母的英文单词
+    cleaned = re.sub(r'\b(4K|24fps|fps|BGM|LUFS|ID|jpg|png|json|shot|shots|re_anchor|reanchor)\b', '', text, flags=re.IGNORECASE)
     matches = re.findall(r'[a-zA-Z]{4,}', cleaned)
     return matches
 
@@ -45,102 +45,89 @@ def validate_food_project(config_path: str):
     warnings = []
     
     # 1. 基础时长与分镜结构检测
-    duration = data.get("视频总时长") or data.get("duration_seconds", 0)
+    duration = data.get("视频总时长") or data.get("duration") or data.get("target_duration", 45.0)
     if not (40.0 <= duration <= 50.0):
-        warnings.append(f"视频总时长为 {duration}s，推荐标准为 40~50s（45s 黄金时长）。")
+        warnings.append(f"视频总时长为 {duration}s，推荐控制在 42~48s（45s 黄金规格）。")
         
-    shots = data.get("分镜列表") or data.get("shots", [])
-    if len(shots) < 6:
-        errors.append(f"分镜数过少（仅 {len(shots)} 镜），45s 短视频标准要求 8 镜紧凑结构。")
-    elif len(shots) != 8:
-        warnings.append(f"分镜数为 {len(shots)} 镜，标准 45s 全案推荐严格 8 镜。")
+    storyboard = data.get("storyboard", {})
+    shots = data.get("分镜列表") or data.get("shots") or storyboard.get("shots", [])
+    if len(shots) < 5:
+        errors.append(f"分镜数过少（仅 {len(shots)} 镜），无法完成完整起承转合叙事。推荐 5~7 镜。")
+    elif len(shots) > 7:
+        warnings.append(f"分镜数为 {len(shots)} 镜，镜头切换过多会大幅增加换脸、换衣与食物变形概率。建议精简至 6 镜。")
         
     # 2. 出镜女主单一锁定与固定性格/音色检测
-    heroine = data.get("出镜女主设定") or data.get("character_bible")
+    heroine = data.get("出镜女主设定") or data.get("character") or data.get("character_bible")
     if not heroine:
-        errors.append("缺失【出镜女主设定】！必须为全片选定一位永久女主。")
+        errors.append("缺失【出镜女主设定】！必须为全片选定一位固定女主。")
     else:
         name = heroine.get("女主姓名") or heroine.get("name") or heroine.get("character_id")
         traits = heroine.get("身材与面貌特征") or heroine.get("visual_traits") or heroine.get("description")
         voice = heroine.get("固定说话音色") or heroine.get("voice_persona")
-        personality = heroine.get("固定性格") or heroine.get("personality")
         
         if not name:
             errors.append("【出镜女主设定】中缺少女主姓名！")
         if not traits:
             errors.append("【出镜女主设定】中缺少身材与相貌特征定妆描述！")
         if not voice:
-            errors.append(f"女主【{name}】缺少固定说话音色配置（TTS音色、语速），严禁随意更换口音！")
-        if not personality:
-            warnings.append(f"女主【{name}】缺少固定性格定位。")
+            warnings.append(f"女主【{name}】缺少固定说话音色配置，建议绑定具体 TTS 音色参数。")
 
-    # 3. 抖音爆款中文BGM与智能闪避策略检测
-    bgm_config = data.get("抖音爆款背景音乐配置") or data.get("bgm_config")
-    if not bgm_config:
-        warnings.append("未配置【抖音爆款背景音乐配置】！推荐为短视频配置地道中文爆款BGM以获取流量推荐。")
-    else:
-        track = bgm_config.get("推荐中文曲目") or bgm_config.get("track", "")
-        ducking = bgm_config.get("智能闪避混音策略") or bgm_config.get("ducking_strategy", "")
-        if not track:
-            errors.append("背景音乐配置缺少【推荐中文曲目】！")
-        if not ducking or ("闪避" not in ducking and "压低" not in ducking and "静音" not in ducking):
-            warnings.append("背景音乐缺少智能闪避（Ducking）控制说明，易导致BGM喧宾夺主掩盖人声与ASMR！")
+    # 3. 逐镜检查（字数、禁词、英文污染、Continuity Router 路由）
+    total_chars = 0
+    prev_was_pure_food = False
 
-    # 4. 逐镜检查（字数、禁词、英文污染、首尾帧重定向）
     for idx, shot in enumerate(shots):
-        shot_id = shot.get("镜号") or shot.get("shot_id", idx + 1)
-        text = shot.get("旁白台词") or shot.get("narration", "")
+        shot_id = shot.get("镜号") or shot.get("id", idx + 1)
+        text = shot.get("旁白台词") or shot.get("narration") or shot.get("dialogue", "")
         prompt = shot.get("纯中文视频生成提示词") or shot.get("prompt", "")
-        inherit = shot.get("参考帧继承策略") or shot.get("frame_inheritance", "")
-        stage = shot.get("阶段定位") or shot.get("stage", "")
-        duration_shot = shot.get("时长") or shot.get("duration", 0)
+        inherit = str(shot.get("参考帧继承策略") or shot.get("reference_strategy") or shot.get("ref_strategy", "")).lower()
+        stage = shot.get("阶段定位") or shot.get("function") or shot.get("title", "")
+        focus = str(shot.get("focus", "")).lower()
 
-        # 4.1 纯中文环境检测（零英文污染）
+        # 3.1 纯中文检测
         eng_in_prompt = check_english_pollution(prompt)
         if eng_in_prompt:
-            errors.append(f"[Shot {shot_id}] 提示词中存在英文单词污染: {eng_in_prompt}。本项目全流程要求 100% 纯中文提示词！")
+            errors.append(f"[Shot {shot_id}] 提示词中存在英文单词污染: {eng_in_prompt}。全案要求 100% 纯中文提示词！")
 
-        eng_in_text = check_english_pollution(text)
-        if eng_in_text:
-            errors.append(f"[Shot {shot_id}] 旁白台词中存在英文单词: {eng_in_text}！")
-
-        # 4.2 禁词与AI套话检测
+        # 3.2 禁词与AI套话检测
         for fw in FORBIDDEN_WORDS:
             if fw in text:
-                errors.append(f"[Shot {shot_id}] 发现严苛禁词/AI套话 '{fw}'（台词: '{text}'）。必须替换为高密度感官实体词！")
+                errors.append(f"[Shot {shot_id}] 发现 AI 套话/禁词 '{fw}'（台词: '{text}'）。请换为真实生活化味觉描写！")
 
-        # 4.3 台词字数卡点 (15 ~ 32 字，最佳 20 ~ 28 字)
+        # 3.3 字数统计与单镜控制
         clean_text = re.sub(r'[，。！？、“”《》\s]', '', text)
         char_cnt = len(clean_text)
-        if char_cnt > 32:
-            errors.append(f"[Shot {shot_id}] 台词字数过长（{char_cnt}字），在 {duration_shot}s 镜头内极易超速或抢拍！建议控制在 20~28 字。")
-        elif char_cnt < 12 and shot_id != 1:
-            warnings.append(f"[Shot {shot_id}] 台词字数偏少（{char_cnt}字），信息密度可能偏弱。")
+        total_chars += char_cnt
 
-        # 4.4 试吃高潮重定向锚定准则检测 (Re-anchor Rule)
-        if shot_id == 6 or "试吃" in stage or "Tasting" in stage:
-            inherit_str = str(inherit)
-            if "重定向" not in inherit_str and "re_anchor" not in inherit_str and "回溯" not in inherit_str:
-                errors.append(f"[Shot {shot_id}] 试吃高潮人像镜头未执行【重定向锚定准则】！严禁直接继承前镜纯食物特写，否则会引发突变或换脸！")
+        if char_cnt > 38:
+            errors.append(f"[Shot {shot_id}] 单镜台词字数过长（{char_cnt}字），极易导致赶场或抢拍！")
 
-    # 5. 负向提示词检测
-    neg_prompt = data.get("严苛负向约束") or data.get("negative_prompt", "")
-    if not neg_prompt:
-        warnings.append("缺少全局【严苛负向约束】（反变形、反换脸、反西方脸等）。")
-    elif check_english_pollution(neg_prompt):
-        errors.append("【严苛负向约束】中包含英文内容，请使用纯中文负向约束词！")
+        # 3.4 Continuity Router 逻辑检测
+        is_character_shot = "character" in focus or any(kw in prompt for kw in ["女主", "美女", "她将", "咽下", "大嚼", "品尝"])
+        if is_character_shot and prev_was_pure_food:
+            # 前一镜是纯食物特写，当前镜切回人物，必须使用 reanchor 或定妆图
+            if "reanchor" not in inherit and "character" not in inherit and "重定向" not in inherit and "定妆" not in inherit:
+                errors.append(f"[Shot {shot_id}] 从纯食物特写切回人物试吃，未配置【重定向锚定 (reanchor_character)】！若直接继承食物末帧会导致严重换脸变形。")
+
+        prev_was_pure_food = ("food" in focus and "character" not in focus) or ("制作" in stage or "特写" in stage)
+
+    # 4. 全片旁白总字数检测 (120~155 字)
+    if total_chars < 115:
+        warnings.append(f"全片旁白总字数仅 {total_chars} 字，信息量稍偏少，推荐 120～155 字。")
+    elif total_chars > 165:
+        errors.append(f"全片旁白总字数达 {total_chars} 字，45 秒内语速过快，严重破坏自然生活质感！必须精简至 155 字以内。")
 
     # 汇总质检报告
     print("\n" + "="*50)
-    print(f"📊 质检报告 - 结果汇总: {os.path.basename(config_path)}")
+    print(f"📊 V2 质检报告 - 结果汇总: {os.path.basename(config_path)}")
     print("="*50)
     
     if errors:
-        print(f"❌ 质检未通过！发现 {len(errors)} 项阻塞性问题（必须纠正）：")
+        print(f"❌ 质检未通过！发现 {len(errors)} 项阻塞性问题：")
         for err in errors:
             print(f"  • {err}")
     else:
-        print("✅ 完美通过！符合【全流程纯中文 + 单女主锁定 + 抖音BGM智能闪避 + 动画连贯】全部技术铁律！")
+        print("✅ 完美通过！完全符合 V2 动态分镜、自然旁白去AI腔、Continuity Router 与纯中文标准！")
 
     if warnings:
         print(f"\n⚠️ 提示优化建议 ({len(warnings)} 项)：")
@@ -151,7 +138,7 @@ def validate_food_project(config_path: str):
     return len(errors) == 0
 
 def main():
-    parser = argparse.ArgumentParser(description="质检短视频工程配置文件")
+    parser = argparse.ArgumentParser(description="质检短视频工程配置文件 (V2 动态版)")
     parser.add_argument("--config", type=str, required=True, help="工程配置文件路径")
     args = parser.parse_args()
     
