@@ -42,6 +42,8 @@ tmp/
 bin/
 drafts/
 output/
+tools/
+.agents/skills/chinese-beauty-food-video/tools/
 
 # 保证 assets 与 examples 目录完整纳入版本控制
 !assets/

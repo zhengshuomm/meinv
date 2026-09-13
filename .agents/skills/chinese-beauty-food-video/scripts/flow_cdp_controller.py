@@ -395,17 +395,22 @@ def determine_start_frame(shot_data, all_shots, config):
     print(f"ℹ️ [纯文本驱动] 分镜 [{shot_id}] 无起跑首帧图片，执行 Text-to-Video。")
     return None
 
-def ensure_silent_video_setting(page):
-    """确保开启 Google Flow 的 'Return silent videos'，避免洋腔与音频失败错误"""
+def ensure_silent_video_setting(page, silent=True):
+    """设置 Google Flow 的 'Return silent videos'"""
     try:
         settings_btn = page.locator('button:has(mat-icon:has-text("settings_2")), button[aria-label*="Setting"]').first
         if settings_btn.is_visible():
             settings_btn.click()
             page.wait_for_timeout(400)
             target = page.locator('button[role="menuitemcheckbox"]:has-text("Return silent videos")').first
-            if target.is_visible() and target.get_attribute("aria-checked") == "false":
-                target.click()
-                print("  🔇 已自动开启 Google Flow『Return silent videos』(返回静音视频，消除洋腔)")
+            if target.is_visible():
+                is_checked = target.get_attribute("aria-checked") == "true"
+                if silent and not is_checked:
+                    target.click()
+                    print("  🔇 已自动开启 Google Flow『Return silent videos』(返回静音视频)")
+                elif not silent and is_checked:
+                    target.click()
+                    print("  🔊 已自动关闭 Google Flow『Return silent videos』(生成现场原生声音)")
                 page.wait_for_timeout(300)
             page.keyboard.press("Escape")
             page.wait_for_timeout(200)
@@ -426,7 +431,7 @@ def build_locked_prompt(shot_data, config):
         prompt = prompt.replace(f"美女{char_name}", "年轻中国女子").replace(char_name, "年轻中国女子")
     return prompt.strip()
 
-def inject_and_generate(page, shot_data, all_shots, config, dry_run=False, auto_download=True):
+def inject_and_generate(page, shot_data, all_shots, config, dry_run=False, auto_download=True, silent=True):
     """向 Google Flow 注入提示词与参考首帧并执行生成"""
     shot_id = shot_data["id"]
     title = shot_data["title"]
@@ -464,7 +469,7 @@ def inject_and_generate(page, shot_data, all_shots, config, dry_run=False, auto_
 
         dismiss_overlays(page)
         ensure_aspect_ratio_9_16(page)
-        ensure_silent_video_setting(page)
+        ensure_silent_video_setting(page, silent=silent)
 
         # 1. 定位并清空输入框
         pm = page.locator("div.ProseMirror")
@@ -553,6 +558,7 @@ def main():
     parser.add_argument("--dry-run", action="store_true", help="仅填充提示词与首帧图片，不触发点击生成")
     parser.add_argument("--no-download", action="store_true", help="仅提交生成，不阻塞等待下载")
     parser.add_argument("--port", type=int, default=9222, help="Chrome 远程调试端口，默认 9222")
+    parser.add_argument("--with-audio", action="store_true", help="允许 Veo 生成现场原生声音 (关闭 Return silent videos)")
     args = parser.parse_args()
 
     target_cfg = args.config
@@ -604,12 +610,13 @@ def main():
 
             auto_download = not args.no_download
 
+            is_silent = not args.with_audio
             if args.shot:
                 target_shot = next((s for s in shots if s["id"] == args.shot), None)
                 if not target_shot:
                     print(f"❌ 找不到分镜 [{args.shot}] (当前工程共有 {len(shots)} 镜)")
                     return
-                inject_and_generate(page, target_shot, shots, config, dry_run=args.dry_run, auto_download=auto_download)
+                inject_and_generate(page, target_shot, shots, config, dry_run=args.dry_run, auto_download=auto_download, silent=is_silent)
             elif args.all:
                 start_shot = args.from_shot
                 for s in shots:
@@ -620,14 +627,14 @@ def main():
                     if os.path.exists(out_path) and os.path.getsize(out_path) > 100000 and os.path.exists(s["last_frame"]):
                         print(f"⏩ [已就绪] 分镜 [{s['id']}] 视频与末帧均已就绪，跳过。")
                         continue
-                    ok = inject_and_generate(page, s, shots, config, dry_run=args.dry_run, auto_download=auto_download)
+                    ok = inject_and_generate(page, s, shots, config, dry_run=args.dry_run, auto_download=auto_download, silent=is_silent)
                     if not ok:
                         print(f"⚠️ 分镜 [{s['id']}] 执行中断，请排查原因。")
                         break
                     print("⏳ 本镜完成，3 秒后进入下一连环镜头...")
                     time.sleep(3)
             else:
-                inject_and_generate(page, shots[0], shots, config, dry_run=args.dry_run, auto_download=auto_download)
+                inject_and_generate(page, shots[0], shots, config, dry_run=args.dry_run, auto_download=auto_download, silent=is_silent)
 
     except Exception as e:
         print(f"❌ 连接或执行失败: {e}")
