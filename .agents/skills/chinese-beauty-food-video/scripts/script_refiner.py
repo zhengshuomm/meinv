@@ -16,11 +16,15 @@ import subprocess
 import argparse
 
 FORBIDDEN_AI_PHRASES = [
+    "老饕",
+    "老饕黑话",
+    "老饕专属",
     "治好了所有内耗",
     "直撞天灵盖",
     "直冲天灵盖",
     "舌头彻底缴械",
     "直接起义",
+    "舌头投降",
     "直接把我吃沉默了",
     "这不是",
     "这是凶",
@@ -45,7 +49,7 @@ def select_character(pool, character_query=None, food_name=None):
         return {
             "character_id": "shen_zhao_yujie",
             "name": "沈昭",
-            "style_label": "高冷老饕御姐风",
+            "style_label": "冷艳懂吃御姐风",
             "personality": "高冷飒爽、懂行挑剔、极度自信、对美食毫不妥协。",
             "expression_style": "言简意赅、观察细腻、点出关键火候与本味。"
         }
@@ -66,12 +70,12 @@ def generate_v2_draft_script(food_name: str, char: dict, city: str = "") -> list
     city_name = city or "本地"
 
     shots = [
-        {"shot_id": 1, "stage": "Hook 抓人钩子", "range": "0-4s", "target_len": "8-14字", "text": f"{city_name}人的清晨，下手比谁都狠。"},
-        {"shot_id": 2, "stage": "Context 环境与背景", "range": "4-10s", "target_len": "20-28字", "text": f"街边随便一家不起眼的老铺，灶台永远腾着白汽，来吃的全是老街坊。"},
-        {"shot_id": 3, "stage": "Process 制作高潮", "range": "10-18s", "target_len": "25-32字", "text": f"大铁锅沸水滚烫，食材几秒内利落出锅，一勺稠厚秘制酱汁立马扣上去。"},
-        {"shot_id": 4, "stage": "Secret 吃法与质感细节", "range": "18-27s", "target_len": "22-30字", "text": f"趁热用筷子翻挑均匀，让每一处挂满油润浓香，口感筋道微偏硬。"},
-        {"shot_id": 5, "stage": "Taste 真实品尝体验", "range": "27-37s", "target_len": "25-32字", "text": f"大口下肚，本味醇厚扎实，配菜的清脆正好解了油腻，越嚼越香。"},
-        {"shot_id": 6, "stage": "Verdict 记忆金句收尾", "range": "37-45s", "target_len": "15-22字", "text": f"所谓地道烟火气，无非就是这一口热腾腾的踏实。"}
+        {"shot_id": 1, "stage": "Hook 抓人钩子 (女主直视镜头亲口说)", "range": "0-4s", "target_len": "8-16字", "text": f"在{city_name}吃美食，不讲究这个吃法就白来了！"},
+        {"shot_id": 2, "stage": "Context 环境交代 (女主面对镜头自然介绍)", "range": "4-10s", "target_len": "20-28字", "text": f"带大家来这家本地老店，灶台热气腾腾，坐满了老街坊！"},
+        {"shot_id": 3, "stage": "Process 制作高潮 (女主指着后厨介绍)", "range": "10-18s", "target_len": "25-30字", "text": f"看师傅这熟练手艺，猛火翻滚热气升腾，香气扑鼻太霸道了！"},
+        {"shot_id": 4, "stage": "Secret 吃法与质感细节 (女主亲手展示吃法)", "range": "18-27s", "target_len": "22-28字", "text": f"吃它一定要趁热，搭配当地秘制调料，层次一下就绝了！"},
+        {"shot_id": 5, "stage": "Taste 真实品尝体验 (女主咀嚼后对镜头点评)", "range": "27-37s", "target_len": "24-30字", "text": f"入口外酥里嫩，地道鲜香在舌尖彻底化开，真的太惊艳了！"},
+        {"shot_id": 6, "stage": "Verdict 记忆金句收尾 (女主直视镜头从容收尾)", "range": "37-45s", "target_len": "18-24字", "text": f"这一口滚烫好味道，藏着{city_name}最真诚的人间烟火！"}
     ]
     return shots
 

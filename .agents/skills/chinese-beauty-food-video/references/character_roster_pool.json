@@ -5,7 +5,7 @@
       "character_id": "shen_zhao_yujie",
       "name": "沈昭",
       "photo_path": "assets/character_master/shen_zhao_master.jpg",
-      "style_label": "高冷老饕御姐风",
+      "style_label": "冷艳懂吃御姐风",
       "visual_traits": "20岁，冷白皮，身材高挑172cm超模比例，修长大长腿，精致下颌线，微挑猫眼，右眼角下方带有一颗标志性微小精致泪痣，高扎利落黑马尾，身穿黑色高开叉修身针织裙配黑色皮质短靴，银色蛇骨锁骨链，清冷高级伪素颜妆容。",
       "personality": "高冷飒爽、外冷内热、懂行挑剔、极度自信、对美食毫不妥协。外表高高在上，尝到极致美味的一瞬间眼神瞬间放大融化，反差萌极强。",
       "voice_persona": {
@@ -15,7 +15,7 @@
         "rate": "+10%",
         "tone_description": "磁性微哑御姐原声，咬字干脆利落，短句多，带着戏谑笑意与挑衅感，断句果断有锋芒。"
       },
-      "expression_style": "毒舌犀利、一针见血、老饕黑话张口就来。口癖与句式：'这不是精致，是凶'、'看着最不起眼，下手往往最狠'、'第一口直接把我吃沉默了'。",
+      "expression_style": "毒舌犀利、一针见血、地道讲究张口就来。口癖与句式：'这不是精致，是凶'、'看着最不起眼，下手往往最狠'、'这一口直接惊艳到了'。",
       "best_match_cuisines": [
         "重庆老火锅",
         "重庆小面",
@@ -23,7 +23,15 @@
         "武汉热干面",
         "自贡冷吃兔",
         "江湖重辣菜"
-      ]
+      ],
+      "hair_face_anchor_en": "20-year-old Chinese beauty Shen Zhao, fair porcelain skin, sharp elegant jawline, slight cat-eye makeup, distinct tiny delicate beauty mark below right eye, high sleek neat black ponytail",
+      "wardrobe_anchor_en": "wearing an iconic black tight-fitting knit midi dress with side slit, silver snake-bone clavicle necklace, black leather ankle boots",
+      "speaking_style_en": "looking directly into the lens, actively speaking in Chinese with confident, sharp mouth articulation and assertive, captivating eye contact",
+      "negative_prompt_en": "no outfit change, no hairstyle change, no loose hair, no different clothes, no western face, no distorted hands, no blurry, no low quality, no morphing",
+      "hair_face_anchor_cn": "20岁中国美女沈昭，冷白皮，身材高挑172cm超模比例，修长大长腿，精致下颌线，微挑猫眼，右眼角下方带有一颗标志性微小精致泪痣，高扎利落黑马尾",
+      "wardrobe_anchor_cn": "身穿黑色高开叉修身针织裙配黑色皮质短靴，银色蛇骨锁骨链，清冷高级伪素颜妆容。",
+      "speaking_style_cn": "直接抬眸直视摄像机镜头，眼神自信灵动，嘴唇自然饱满开合，清晰说出地道中文台词，口型动作生动真实，面部微表情随说话起伏",
+      "negative_prompt_cn": "严禁更换服装，严禁改变发型，严禁散发，严禁非指定衣物，严禁洋人面孔，严禁畸变手指，严禁多余手指，严禁闭嘴说话，严禁假唱木偶嘴，严禁卡通动漫，严禁模糊低清"
     },
     {
       "character_id": "lin_chuwei_sweet",
@@ -47,7 +55,15 @@
         "广式蛋挞甜品",
         "扬州早茶点心",
         "鲜肉小笼包"
-      ]
+      ],
+      "hair_face_anchor_en": "20-year-old Chinese beauty Lin Chuwei, soft fair rosy skin, innocent watery almond eyes with aegyo sal, natural wispy air bangs with twin low pigtails, cheerful healing smile",
+      "wardrobe_anchor_en": "wearing a soft cream-white oversized knit cardigan over a pastel pink pleated mini skirt, white socks and clean white sneakers",
+      "speaking_style_en": "looking directly into the lens, actively speaking in Chinese with lively, cheerful mouth movement, sweet expressive eyes, and gentle friendly smile",
+      "negative_prompt_en": "no outfit change, no hairstyle change, no different clothing, no dark makeup, no western face, no distorted hands, no blurry, no low quality",
+      "hair_face_anchor_cn": "20岁中国美女林初薇，粉白透亮皮肤，水灵灵的无辜杏仁大眼带卧蚕，元气饱满苹果肌，自然微卷空气刘海双低马尾",
+      "wardrobe_anchor_cn": "身穿软糯米白大开衫配粉色百褶短裙与白袜小白鞋，双腿纤细匀称，笑容极具治愈感染力。",
+      "speaking_style_cn": "直接抬眸直视摄像机镜头，眼神自信灵动，嘴唇自然饱满开合，清晰说出地道中文台词，口型动作生动真实，面部微表情随说话起伏",
+      "negative_prompt_cn": "严禁更换服装，严禁改变发型，严禁散发，严禁非指定衣物，严禁洋人面孔，严禁畸变手指，严禁多余手指，严禁闭嘴说话，严禁假唱木偶嘴，严禁卡通动漫，严禁模糊低清"
     },
     {
       "character_id": "su_wanqing_guofeng",
@@ -71,7 +87,15 @@
         "龙井虾仁",
         "绍兴醉蟹",
         "泉水松茸鸡汤"
-      ]
+      ],
+      "hair_face_anchor_en": "20-year-old Chinese classical beauty Su Wanqing, warm porcelain skin, willow-leaf eyebrows, graceful phoenix eyes, traditional low chignon hair bun pinned with an elegant silver flower hairpin, slender swan neck",
+      "wardrobe_anchor_en": "wearing a pale bamboo-green jacquard silk high-slit qipao dress with nude-toned kitten heels",
+      "speaking_style_en": "looking directly into the lens, actively speaking in Chinese with gentle, poised mouth movement, calm graceful cadence, and elegant literary charm",
+      "negative_prompt_en": "no outfit change, no hairstyle change, no modern casual clothing, no loose messy hair, no western face, no distorted fingers, no blurry",
+      "hair_face_anchor_cn": "20岁中国美女苏婉清，温润冷白皮，远山秋水眉，优雅丹凤眼，传统低挽发髻别雅致银花簪",
+      "wardrobe_anchor_cn": "身穿淡竹青提花真丝高开叉旗袍配浅裸色细高跟鞋，天鹅颈，步态轻盈端庄，长腿线条曼妙修长，江南水乡温婉气韵。",
+      "speaking_style_cn": "直接抬眸直视摄像机镜头，眼神自信灵动，嘴唇自然饱满开合，清晰说出地道中文台词，口型动作生动真实，面部微表情随说话起伏",
+      "negative_prompt_cn": "严禁更换服装，严禁改变发型，严禁散发，严禁非指定衣物，严禁洋人面孔，严禁畸变手指，严禁多余手指，严禁闭嘴说话，严禁假唱木偶嘴，严禁卡通动漫，严禁模糊低清"
     },
     {
       "character_id": "zhou_minyi_hongkong",
@@ -87,7 +111,7 @@
         "rate": "+0%",
         "tone_description": "微醺慵懒、音调微低带磁性、老钱大女主质感声线，尾音轻挑带着从容与傲娇。"
       },
-      "expression_style": "带着王家卫电影般的叙事调性与老饕的挑剔。口癖与句式：'第一口是海风，第二口是刀刃，第三口你就彻底回不去了'、'敢在深夜跟我吃这个的，都是自己人'、'镬气够不够，舌头一碰便知分晓'。",
+      "expression_style": "带着王家卫电影般的叙事调性与懂吃讲究。口癖与句式：'第一口是海风，第二口是刀刃，第三口你就彻底回不去了'、'敢在深夜跟我吃这个的，都是自己人'、'镬气够不够，舌头一碰便知分晓'。",
       "best_match_cuisines": [
         "潮汕生腌膏蟹",
         "避风塘炒蟹",
@@ -95,7 +119,15 @@
         "顺德鱼生",
         "生滚牛肉粥",
         "老式煲仔饭"
-      ]
+      ],
+      "hair_face_anchor_en": "20-year-old Chinese beauty Zhou Minyi, 1990s Hong Kong retro aesthetics, voluptuous bone structure, thick voluminous black wavy hair, wild defined eyebrows, matte classic crimson lips, fair skin",
+      "wardrobe_anchor_en": "wearing a retro bold red high-slit silk slip dress, thin-strap black high heels, and vintage metallic statement earrings",
+      "speaking_style_en": "looking directly into the lens, actively speaking in Chinese with charismatic, full-bodied lip articulation and confident retro allure",
+      "negative_prompt_en": "no outfit change, no hairstyle change, no straight hair, no different clothes, no pale lips, no western face, no distorted hands, no blurry",
+      "hair_face_anchor_cn": "20岁中国美女周敏仪，浓颜系骨相，浓密蓬松的黑色大波浪长卷发，野生浓眉，复古哑光正红唇，冷白皮",
+      "wardrobe_anchor_cn": "身穿复古正红色高开叉真丝吊带长裙配黑色细带高跟鞋与复古金属大耳环，身材曼妙高挑，气场全开。",
+      "speaking_style_cn": "直接抬眸直视摄像机镜头，眼神自信灵动，嘴唇自然饱满开合，清晰说出地道中文台词，口型动作生动真实，面部微表情随说话起伏",
+      "negative_prompt_cn": "严禁更换服装，严禁改变发型，严禁散发，严禁非指定衣物，严禁洋人面孔，严禁畸变手指，严禁多余手指，严禁闭嘴说话，严禁假唱木偶嘴，严禁卡通动漫，严禁模糊低清"
     },
     {
       "character_id": "song_xiaoyun_literary",
@@ -119,7 +151,15 @@
         "手作豆腐煲",
         "阳春面",
         "老北京打卤面"
-      ]
+      ],
+      "hair_face_anchor_en": "20-year-old Chinese beauty Song Xiaoyun, soft radiant skin, warm smiling eyes, delicate round thin gold-wire glasses, relaxed low messy bun",
+      "wardrobe_anchor_en": "wearing a loose oatmeal cotton-linen button-up shirt, dark green pleated cotton maxi skirt, and dark brown leather loafers",
+      "speaking_style_en": "looking directly into the lens, actively speaking in Chinese with mild, articulate mouth dynamics and relaxed, intellectual warmth",
+      "negative_prompt_en": "no outfit change, no hairstyle change, no heavy makeup, no revealing clothes, no western face, no distorted hands, no blurry",
+      "hair_face_anchor_cn": "20岁中国美女宋晓芸，清透水嫩皮肤，柔和含笑的双眸，细金丝圆框眼镜，松散慵懒的低丸子头",
+      "wardrobe_anchor_cn": "身穿宽松燕麦棉麻浅色衬衫配墨绿百褶棉麻长裙与深棕色乐福鞋，书卷气浓郁，文艺松弛。",
+      "speaking_style_cn": "直接抬眸直视摄像机镜头，眼神自信灵动，嘴唇自然饱满开合，清晰说出地道中文台词，口型动作生动真实，面部微表情随说话起伏",
+      "negative_prompt_cn": "严禁更换服装，严禁改变发型，严禁散发，严禁非指定衣物，严禁洋人面孔，严禁畸变手指，严禁多余手指，严禁闭嘴说话，严禁假唱木偶嘴，严禁卡通动漫，严禁模糊低清"
     },
     {
       "character_id": "chen_keke_cat",
@@ -143,7 +183,15 @@
         "鲍汁煨花菇",
         "精致果木烤鸭",
         "法式红酒牛肉"
-      ]
+      ],
+      "hair_face_anchor_en": "20-year-old Chinese beauty Chen Keke, youthful heart-shaped face, playful upturned cat-eyes, glossy plump lips, translucent porcelain skin, fluffy brunette wavy hair in half-up twin space buns",
+      "wardrobe_anchor_en": "wearing a pastel pink Chanel-style bouclé tweed cropped jacket, high-waisted pleated mini skirt, and black Mary Jane shoes",
+      "speaking_style_en": "looking directly into the lens, actively speaking in Chinese with spirited, coquettish mouth articulation and sparkling playful gaze",
+      "negative_prompt_en": "no outfit change, no hairstyle change, no casual sportswear, no dull makeup, no western face, no distorted fingers, no blurry",
+      "hair_face_anchor_cn": "20岁中国美女陈可可，饱满心形幼态脸，微挑娇憨猫眼，水润嘟嘟唇，白瓷透光肌，毛茸茸黑棕色微卷发扎着俏皮双半丸子头",
+      "wardrobe_anchor_cn": "身穿浅粉色小香风粗花呢短外套配高腰百褶短裙与黑色玛丽珍鞋，修长纤细双腿，贵气灵动。",
+      "speaking_style_cn": "直接抬眸直视摄像机镜头，眼神自信灵动，嘴唇自然饱满开合，清晰说出地道中文台词，口型动作生动真实，面部微表情随说话起伏",
+      "negative_prompt_cn": "严禁更换服装，严禁改变发型，严禁散发，严禁非指定衣物，严禁洋人面孔，严禁畸变手指，严禁多余手指，严禁闭嘴说话，严禁假唱木偶嘴，严禁卡通动漫，严禁模糊低清"
     },
     {
       "character_id": "zhao_ziqing_spicy",
@@ -167,7 +215,15 @@
         "宜宾燃面",
         "重庆九宫格鲜毛肚",
         "富顺豆花饭"
-      ]
+      ],
+      "hair_face_anchor_en": "20-year-old Chinese beauty Zhao Ziqing, healthy glowing rosy skin, spirited clever eyes, charming dimples and tiny canine tooth when smiling, high messy topknot bun with airy flyaways",
+      "wardrobe_anchor_en": "wearing a fiery bright red cropped t-shirt, high-waisted distressed denim cutoff shorts, and red-and-white canvas sneakers",
+      "speaking_style_en": "looking directly into the lens, actively speaking in Chinese with punchy, energetic lip articulation and vibrant fiery enthusiasm",
+      "negative_prompt_en": "no outfit change, no hairstyle change, no loose formal hair, no long dress, no western face, no distorted hands, no blurry",
+      "hair_face_anchor_cn": "20岁中国美女赵子晴，白里透红的健康透亮皮肤，灵动狡黠的大眼睛，笑起来带迷人梨涡与虎牙，随性高扎丸子头碎发飞扬",
+      "wardrobe_anchor_cn": "身穿火红短T恤配高腰破洞牛仔超短裤与红白帆布鞋，紧实笔直大长腿，活力爆棚。",
+      "speaking_style_cn": "直接抬眸直视摄像机镜头，眼神自信灵动，嘴唇自然饱满开合，清晰说出地道中文台词，口型动作生动真实，面部微表情随说话起伏",
+      "negative_prompt_cn": "严禁更换服装，严禁改变发型，严禁散发，严禁非指定衣物，严禁洋人面孔，严禁畸变手指，严禁多余手指，严禁闭嘴说话，严禁假唱木偶嘴，严禁卡通动漫，严禁模糊低清"
     },
     {
       "character_id": "jiang_li_sporty",
@@ -191,7 +247,15 @@
         "东北锅包肉",
         "西安肉夹馍",
         "烤生蚝"
-      ]
+      ],
+      "hair_face_anchor_en": "20-year-old Chinese beauty Jiang Li, sun-kissed radiant fair skin, high athletic braided ponytail, spirited confident gaze, athletic toned physique",
+      "wardrobe_anchor_en": "wearing a white athletic halter cropped tank top, olive green high-waisted cargo pants, and vintage chunky sneakers",
+      "speaking_style_en": "looking directly into the lens, actively speaking in Chinese with crisp, dynamic mouth movement and bold, radiant street attitude",
+      "negative_prompt_en": "no outfit change, no hairstyle change, no loose hair, no feminine dress, no western face, no distorted hands, no blurry",
+      "hair_face_anchor_cn": "20岁中国美女姜黎，阳光健康微光泽冷白皮，高束运动编发马尾，灵动自信目光，清晰紧致马甲线",
+      "wardrobe_anchor_cn": "身穿白色运动挂脖短背心配军绿色高腰工装长裤与复古运动鞋，身材健美高挑，长腿线条力量感十足。",
+      "speaking_style_cn": "直接抬眸直视摄像机镜头，眼神自信灵动，嘴唇自然饱满开合，清晰说出地道中文台词，口型动作生动真实，面部微表情随说话起伏",
+      "negative_prompt_cn": "严禁更换服装，严禁改变发型，严禁散发，严禁非指定衣物，严禁洋人面孔，严禁畸变手指，严禁多余手指，严禁闭嘴说话，严禁假唱木偶嘴，严禁卡通动漫，严禁模糊低清"
     },
     {
       "character_id": "xia_qinghe_mori",
@@ -215,7 +279,15 @@
         "云南野生菌菇汽锅鸡",
         "老北京铜锅清汤肉",
         "高山笋干土鸡汤"
-      ]
+      ],
+      "hair_face_anchor_en": "20-year-old Chinese beauty Xia Qinghe, luminous ethereal skin, innocent deer-like eyes, airy soft-wavy chestnut short hair with micro bangs",
+      "wardrobe_anchor_en": "wearing an oversized light oatmeal chunky knit sweater over a white floral-patterned linen midi dress and retro lace-up leather boots",
+      "speaking_style_en": "looking directly into the lens, actively speaking in Chinese with gentle, soft lip movements and tranquil, refreshing eye contact",
+      "negative_prompt_en": "no outfit change, no hairstyle change, no dark makeup, no modern cyber clothes, no western face, no distorted hands, no blurry",
+      "hair_face_anchor_cn": "20岁中国美女夏青禾，白皙近乎透明的发光肌肤，清澈纯净小鹿眼，微卷蓬松栗色碎发",
+      "wardrobe_anchor_cn": "身穿宽松浅燕麦色粗线毛衣外搭白色碎花棉麻长裙与复古小皮靴，体态轻盈柔美，宛如晨雾中走出的林间仙子。",
+      "speaking_style_cn": "直接抬眸直视摄像机镜头，眼神自信灵动，嘴唇自然饱满开合，清晰说出地道中文台词，口型动作生动真实，面部微表情随说话起伏",
+      "negative_prompt_cn": "严禁更换服装，严禁改变发型，严禁散发，严禁非指定衣物，严禁洋人面孔，严禁畸变手指，严禁多余手指，严禁闭嘴说话，严禁假唱木偶嘴，严禁卡通动漫，严禁模糊低清"
     },
     {
       "character_id": "lu_xiaoxiao_cyber",
@@ -239,7 +311,15 @@
         "武汉鸭脖鸭头",
         "臭豆腐螺蛳粉加臭加辣",
         "麻辣小龙虾"
-      ]
+      ],
+      "hair_face_anchor_en": "20-year-old Chinese beauty Lu Xiaoxiao, sharply sculpted v-shaped face, cool smokey cat-eyes, sleek black high ponytail with muted violet highlights",
+      "wardrobe_anchor_en": "wearing a black tactical techwear cropped vest over sheer mesh long sleeves, high-waisted pleated cargo mini skirt, and knee-high combat boots",
+      "speaking_style_en": "looking directly into the lens, actively speaking in Chinese with cool, nonchalant mouth movements and piercing, defiant gaze",
+      "negative_prompt_en": "no outfit change, no hairstyle change, no sweet floral clothes, no loose messy hair, no western face, no distorted hands, no blurry",
+      "hair_face_anchor_cn": "20岁中国美女陆潇潇，轮廓立体分明的瓜子脸，冷酷微挑烟熏猫眼，暗紫色挑染黑色高马尾",
+      "wardrobe_anchor_cn": "身穿黑色战术机能短马甲叠穿紧身网纱与高腰工装百褶短裙，脚蹬及膝厚底系带战靴配网袜，身材修长高挑，冷艳拽酷。",
+      "speaking_style_cn": "直接抬眸直视摄像机镜头，眼神自信灵动，嘴唇自然饱满开合，清晰说出地道中文台词，口型动作生动真实，面部微表情随说话起伏",
+      "negative_prompt_cn": "严禁更换服装，严禁改变发型，严禁散发，严禁非指定衣物，严禁洋人面孔，严禁畸变手指，严禁多余手指，严禁闭嘴说话，严禁假唱木偶嘴，严禁卡通动漫，严禁模糊低清"
     },
     {
       "character_id": "ye_weiwei_nightglam",
@@ -263,7 +343,15 @@
         "深夜居酒屋炭火烤肉",
         "辣炒田螺",
         "港式避风塘大虾"
-      ]
+      ],
+      "hair_face_anchor_en": "20-year-old Chinese beauty Ye Weiwei, glowing porcelain skin, alluring collarbones and swan neck, jet-black soft-wavy shoulder-length hair, subtle sultry evening makeup",
+      "wardrobe_anchor_en": "wearing an emerald green silk halter cowl-neck slip dress with high slit, paired with delicate stiletto sandals",
+      "speaking_style_en": "looking directly into the lens, actively speaking in Chinese with intoxicating, graceful lip articulation and magnetic, sultry eye contact",
+      "negative_prompt_en": "no outfit change, no hairstyle change, no casual sportswear, no tie-up hair, no western face, no distorted fingers, no blurry",
+      "hair_face_anchor_cn": "20岁中国美女叶薇薇，冷白皮光泽诱人，精致锁骨与天鹅颈，乌黑微卷披肩发",
+      "wardrobe_anchor_cn": "身穿翡翠墨绿丝绸露肩挂脖吊带裙，配细高跟鞋，修长大长腿与曼妙比例，夜景灯火阑珊，纯欲撩人。",
+      "speaking_style_cn": "直接抬眸直视摄像机镜头，眼神自信灵动，嘴唇自然饱满开合，清晰说出地道中文台词，口型动作生动真实，面部微表情随说话起伏",
+      "negative_prompt_cn": "严禁更换服装，严禁改变发型，严禁散发，严禁非指定衣物，严禁洋人面孔，严禁畸变手指，严禁多余手指，严禁闭嘴说话，严禁假唱木偶嘴，严禁卡通动漫，严禁模糊低清"
     },
     {
       "character_id": "zhong_xuening_luxury",
@@ -287,7 +375,15 @@
         "炭烤熟成和牛",
         "顺德醉蟹",
         "高端粤菜私房菜"
-      ]
+      ],
+      "hair_face_anchor_en": "20-year-old Chinese beauty Zhong Xuening, 173cm supermodel proportions, fair porcelain skin, sleek straight glossy black hair cascading past shoulders, refined elegant facial features, single pearl earrings",
+      "wardrobe_anchor_en": "wearing a minimalist black deep-V long-sleeved fitted knee-length knit dress, fine diamond clavicle necklace, pointed-toe black heels",
+      "speaking_style_en": "looking directly into the lens, actively speaking in Chinese with aristocratic, calm lip articulation and composed, authoritative elegance",
+      "negative_prompt_en": "no outfit change, no hairstyle change, no colorful casual clothing, no curly messy hair, no western face, no distorted hands, no blurry",
+      "hair_face_anchor_cn": "20岁中国美女钟雪凝，冷白皮，身材高挑173cm沙漏型超模曲线，黑色深V长袖修身及膝针织裙，佩戴简约钻石细锁骨链与单颗珍珠耳坠，一头乌黑顺直的长发自然垂落至胸前，五官立体明艳，神态高贵从容，手持精致黑色皮革晚宴包，尽显顶级私享名媛与高定餐厅主理人的优雅气场。",
+      "wardrobe_anchor_cn": "身穿角色定妆参考图中的固定服装",
+      "speaking_style_cn": "直接抬眸直视摄像机镜头，眼神自信灵动，嘴唇自然饱满开合，清晰说出地道中文台词，口型动作生动真实，面部微表情随说话起伏",
+      "negative_prompt_cn": "严禁更换服装，严禁改变发型，严禁散发，严禁非指定衣物，严禁洋人面孔，严禁畸变手指，严禁多余手指，严禁闭嘴说话，严禁假唱木偶嘴，严禁卡通动漫，严禁模糊低清"
     },
     {
       "character_id": "ruan_qingxun_urban",
@@ -303,7 +399,7 @@
         "rate": "+8%",
         "tone_description": "明媚通透、极富感染力与亲和力，带着都市探店博主的真实兴奋与爽快节奏。"
       },
-      "expression_style": "阳光直接、共情力极强、生动活泼。口癖与句式：\"跟着老饕走绝不踩雷\"、\"这一口真的太扎实了\"、\"幸福感直接拉满，原地治愈打工人\"。",
+      "expression_style": "阳光直接、共情力极强、生动活泼。口癖与句式：\"跟着懂吃的人走绝不踩雷\"、\"这一口真的太扎实了\"、\"幸福感直接拉满，原地治愈打工人\"。",
       "best_match_cuisines": [
         "上海生煎包",
         "南京鸭血粉丝汤",
@@ -311,7 +407,15 @@
         "西安肉夹馍",
         "广式煲仔饭",
         "街头排队老字号"
-      ]
+      ],
+      "hair_face_anchor_en": "20-year-old Chinese beauty Ruan Qingxun, warm glowing fair skin, half-tied brunette wavy hair, bright smiling almond eyes with charming dimples, approachable urban look",
+      "wardrobe_anchor_en": "wearing a light beige ribbed scoop-neck three-quarter sleeve knit top, dark gray high-waisted wide-leg tailored trousers, crossbody small brown leather bag",
+      "speaking_style_en": "looking directly into the lens, actively speaking in Chinese with natural, engaging mouth articulation and vibrant, relatable food vlogger energy",
+      "negative_prompt_en": "no outfit change, no hairstyle change, no evening gown, no heavy stage makeup, no western face, no distorted hands, no blurry",
+      "hair_face_anchor_cn": "20岁中国美女阮清寻，暖白皮透亮，169cm高挑匀称身材，浅米色细罗纹大圆领七分袖针织衫配深灰色高腰西装阔腿裤，单肩斜挎棕色小皮包，阳光下栗黑色半扎微卷发，眉眼弯弯笑容明媚灿烂，带有迷人的梨涡，自然干练又极具亲和力的都市独立女性探店博主形象。",
+      "wardrobe_anchor_cn": "身穿角色定妆参考图中的固定服装",
+      "speaking_style_cn": "直接抬眸直视摄像机镜头，眼神自信灵动，嘴唇自然饱满开合，清晰说出地道中文台词，口型动作生动真实，面部微表情随说话起伏",
+      "negative_prompt_cn": "严禁更换服装，严禁改变发型，严禁散发，严禁非指定衣物，严禁洋人面孔，严禁畸变手指，严禁多余手指，严禁闭嘴说话，严禁假唱木偶嘴，严禁卡通动漫，严禁模糊低清"
     },
     {
       "character_id": "li_wenyan_pureallure",
@@ -335,7 +439,15 @@
         "冰镇生腌红膏蟹",
         "原盅炖燕窝",
         "私房慢炖清汤"
-      ]
+      ],
+      "hair_face_anchor_en": "20-year-old Chinese beauty Li Wenyan, delicate porcelain skin, naturally wavy dark brunette hair lightly brushing shoulders, soft pure-allure facial contours, serene clear gaze",
+      "wardrobe_anchor_en": "wearing a champagne gold minimalist silk V-neck slip maxi dress, fine silver ankle chain, barefoot or neutral mules",
+      "speaking_style_en": "looking directly into the lens, actively speaking in Chinese with relaxed, whisper-soft lip movement and leisurely, intimate eye contact",
+      "negative_prompt_en": "no outfit change, no hairstyle change, no bright sportswear, no tight ponytail, no western face, no distorted hands, no blurry",
+      "hair_face_anchor_cn": "20岁中国美女黎温言，细腻瓷白皮，170cm纤细曼妙身段",
+      "wardrobe_anchor_cn": "身穿香槟金极简真丝V领吊带长裙，慵懒蜷坐在落地窗边的浅色单人沙发椅上，自然黑褐色中长微卷发微拂肩头，五官清秀纯欲，眼神柔和清澈带有一丝慵懒迷离，晨光洒在光洁的锁骨与肩颈线条上，呈现出高级慵懒的私享品味。",
+      "speaking_style_cn": "直接抬眸直视摄像机镜头，眼神自信灵动，嘴唇自然饱满开合，清晰说出地道中文台词，口型动作生动真实，面部微表情随说话起伏",
+      "negative_prompt_cn": "严禁更换服装，严禁改变发型，严禁散发，严禁非指定衣物，严禁洋人面孔，严禁畸变手指，严禁多余手指，严禁闭嘴说话，严禁假唱木偶嘴，严禁卡通动漫，严禁模糊低清"
     }
   ]
 }

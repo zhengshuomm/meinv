@@ -1,14 +1,17 @@
 {
-  "ip_protagonist_id": "chinese_beauty_master_yujie",
+  "description": "中华美食短视频女主人物档案标准Schema与示例蓝图。完整14位女主档案库请统一参阅 references/character_roster_pool.json。单部视频生成时从14人库中选定1位女主并物理强锁定全片所有分镜。",
+  "schema_version": "V4_PURE_CHINESE_ANCHOR",
+  "roster_pool_reference": "references/character_roster_pool.json",
+  "ip_protagonist_id": "shen_zhao_yujie",
   "name_cn": "沈昭 (昭昭)",
-  "title": "跨视频全局唯一定妆女主档案 (Universal IP Master Character Bible)",
-  "status": "LOCKED (永久锁定，全系列通用)",
+  "title": "女主人物档案标准结构示例 (Character Anchor Blueprint Example)",
+  "status": "LOCKED_IN_PROJECT (单项目选定后全局物理锁定)",
   "master_keyframe_path": "assets/character_master/shen_zhao_master.jpg",
   "demographics": {
     "age": 20,
     "gender": "Female",
     "ethnicity": "Chinese (East Asian)",
-    "archetype": "高冷老饕御姐 (Yu Jie - Sophisticated, Cool, Alluring Food Connoisseur)",
+    "archetype": "冷艳懂吃御姐 (Yu Jie - Sophisticated, Cool, Alluring Foodie)",
     "height": "172 cm (Supermodel proportions, long slender legs)",
     "body_type": "Tall, slender, elegant collarbones, straight shoulders, perfect 9:16 vertical video proportions"
   },

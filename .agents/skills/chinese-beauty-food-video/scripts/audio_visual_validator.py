@@ -103,7 +103,7 @@ def validate_food_project(config_path: str):
             errors.append(f"[Shot {shot_id}] 单镜台词字数过长（{char_cnt}字），极易导致赶场或抢拍！")
 
         # 3.4 Continuity Router 逻辑检测
-        is_character_shot = "character" in focus or any(kw in prompt for kw in ["女主", "美女", "她将", "咽下", "大嚼", "品尝"])
+        is_character_shot = "character" in focus or any(kw in prompt for kw in ["女主", "美女", "她将", "咽下", "大嚼", "女主品尝"])
         if is_character_shot and prev_was_pure_food:
             # 前一镜是纯食物特写，当前镜切回人物，必须使用 reanchor 或定妆图
             if "reanchor" not in inherit and "character" not in inherit and "重定向" not in inherit and "定妆" not in inherit:

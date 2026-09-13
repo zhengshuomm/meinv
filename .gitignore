@@ -38,6 +38,10 @@ flow_status.png
 # 视频渲染与临时文件
 tmp/
 *.log
+.venv/
+bin/
+drafts/
+output/
 
 # 保证 assets 与 examples 目录完整纳入版本控制
 !assets/

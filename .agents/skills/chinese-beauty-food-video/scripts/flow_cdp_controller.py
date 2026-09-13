@@ -33,7 +33,7 @@ except ImportError:
     sync_playwright = None
 
 WORKSPACE_ROOT = "/Users/shuozheng/Documents/meinv"
-DEFAULT_CONFIG_PATH = os.path.join(WORKSPACE_ROOT, "examples", "zibo_shaokao_45s.json")
+DEFAULT_CONFIG_PATH = None
 OUTPUT_VIDEOS_DIR = os.path.join(WORKSPACE_ROOT, "tmp", "videos")
 
 os.makedirs(OUTPUT_VIDEOS_DIR, exist_ok=True)
@@ -90,10 +90,10 @@ def load_food_config(config_path):
     for idx, s in enumerate(raw_shots, start=1):
         shot_id = s.get("镜号") or s.get("id") or idx
         title = s.get("阶段定位") or s.get("function") or s.get("title", f"Shot {shot_id}")
-        prompt = s.get("纯中文视频生成提示词") or s.get("prompt", "")
+        prompt = s.get("prompt_cn") or s.get("prompt") or s.get("纯中文视频生成提示词") or s.get("prompt_en") or ""
         ref_strategy = s.get("参考帧继承策略") or s.get("reference_strategy") or s.get("ref_strategy", "")
         duration = float(s.get("时长") or (float(s.get("end", 6.0)) - float(s.get("start", 0.0))) if "start" in s and "end" in s else s.get("duration", 6.0))
-        dialogue = s.get("旁白台词") or s.get("narration") or s.get("dialogue", "")
+        dialogue = s.get("dialogue_cn") or s.get("dialogue") or s.get("旁白台词") or s.get("narration", "")
         audio_notes = s.get("声音拟音与音乐控制") or s.get("audio_notes", "")
         focus = s.get("focus", "")
 
@@ -268,7 +268,7 @@ def clear_prompt_box(page):
         except Exception:
             pass
 
-def wait_for_generation_complete(page, shot_id, timeout=300):
+def wait_for_generation_complete(page, shot_id, timeout=300, initial_error_count=0):
     """实时监听云端渲染进度 (0%~100%) 并精准抓取最新生成的视频"""
     print(f"⏳ 开始监听分镜 [{shot_id}] 生成状态 (最大等待: {timeout}秒)...")
     start_time = time.time()
@@ -277,12 +277,14 @@ def wait_for_generation_complete(page, shot_id, timeout=300):
     while time.time() - start_time < timeout:
         elapsed = int(time.time() - start_time)
 
-        # 检查错误警告
+        # 检查新出现的错误警告
         error_tiles = page.locator('flow-error-tile, .error-tile, [role="alert"]:has-text("failed")')
-        if error_tiles.count() > 0 and error_tiles.first.is_visible():
-            err_text = error_tiles.first.inner_text().strip()
-            print(f"❌ 检测到生成报错: {err_text}")
-            return False
+        if error_tiles.count() > initial_error_count:
+            last_err = error_tiles.last
+            if last_err.is_visible():
+                err_text = last_err.inner_text().strip()
+                print(f"❌ 检测到生成报错: {err_text}")
+                return False
 
         # 读取进度百分比
         pct_locators = page.locator('.progress-text, [aria-valuenow], span:has-text("%")')
@@ -393,33 +395,36 @@ def determine_start_frame(shot_data, all_shots, config):
     print(f"ℹ️ [纯文本驱动] 分镜 [{shot_id}] 无起跑首帧图片，执行 Text-to-Video。")
     return None
 
+def ensure_silent_video_setting(page):
+    """确保开启 Google Flow 的 'Return silent videos'，避免洋腔与音频失败错误"""
+    try:
+        settings_btn = page.locator('button:has(mat-icon:has-text("settings_2")), button[aria-label*="Setting"]').first
+        if settings_btn.is_visible():
+            settings_btn.click()
+            page.wait_for_timeout(400)
+            target = page.locator('button[role="menuitemcheckbox"]:has-text("Return silent videos")').first
+            if target.is_visible() and target.get_attribute("aria-checked") == "false":
+                target.click()
+                print("  🔇 已自动开启 Google Flow『Return silent videos』(返回静音视频，消除洋腔)")
+                page.wait_for_timeout(300)
+            page.keyboard.press("Escape")
+            page.wait_for_timeout(200)
+    except Exception:
+        pass
+
 def build_locked_prompt(shot_data, config):
     """
-    V2 结构化提示词构建器：
-    1. Reference > 长篇文字重复描写，不浪费 token；
-    2. 人物出镜时注入简明强效锚定：
-       '严格保持与人物参考图完全相同的中国女性：保持相同面部身份、五官、发型、妆容、服装和饰品，不改变服装和饰品。'
-    3. 视觉注意力重心：食物 40%、人物 25%、动作 20%、摄影环境 15%；
-    4. 负向约束拦截后置注入。
+    V4 结构化提示词装配:
+    视频提示词 100% 采用纯中文电影级六段式提示词规范，坚决杜绝任何英文机位词与洋腔。
+    prompt_cn / prompt 中已包含了完整的人物五官、发型、服装锁定、对镜头口播与中文负向约束。
     """
-    base_prompt = shot_data["prompt"]
-    character_info = config["character"]
-    character_name = character_info.get("女主姓名", "女主")
-
-    # 判断是否为人物出镜分镜
-    has_character = any(kw in base_prompt for kw in [character_name, "女主", "美女", "她", "双手", "吃", "咽下", "喝", "品尝", "对视", "眼神"])
-
-    if has_character:
-        anchor_prefix = "严格保持与人物参考图完全相同的中国女性：保持相同面部身份、五官、发型、妆容、服装和饰品，不改变服装和饰品。"
-        if "严格保持与人物参考图" not in base_prompt:
-            base_prompt = f"{anchor_prefix} {base_prompt}"
-
-    # V2 严苛负向约束
-    neg_block = " 禁止换脸，禁止更换衣服，禁止额外手指，禁止食物漂浮，禁止夸张网红表情，禁止塑料假脸，禁止头顶光环，禁止胸前麦克风。"
-    if "禁止换脸" not in base_prompt and "严禁换脸" not in base_prompt:
-        base_prompt += neg_block
-
-    return base_prompt
+    prompt = shot_data.get("prompt_cn") or shot_data.get("prompt") or shot_data.get("video_prompt") or ""
+    # 防范 Google Prominent People 审查：过滤具体姓名，改为通用代称
+    char_info = config.get("character", {})
+    char_name = char_info.get("女主姓名") or char_info.get("name")
+    if char_name and char_name in prompt:
+        prompt = prompt.replace(f"美女{char_name}", "年轻中国女子").replace(char_name, "年轻中国女子")
+    return prompt.strip()
 
 def inject_and_generate(page, shot_data, all_shots, config, dry_run=False, auto_download=True):
     """向 Google Flow 注入提示词与参考首帧并执行生成"""
@@ -459,6 +464,7 @@ def inject_and_generate(page, shot_data, all_shots, config, dry_run=False, auto_
 
         dismiss_overlays(page)
         ensure_aspect_ratio_9_16(page)
+        ensure_silent_video_setting(page)
 
         # 1. 定位并清空输入框
         pm = page.locator("div.ProseMirror")
@@ -485,7 +491,10 @@ def inject_and_generate(page, shot_data, all_shots, config, dry_run=False, auto_
         dismiss_overlays(page)
         pm.click(force=True)
         page.wait_for_timeout(200)
-        page.keyboard.type(locked_prompt, delay=5)
+        try:
+            page.keyboard.insert_text(locked_prompt)
+        except Exception:
+            page.keyboard.type(locked_prompt, delay=5)
         page.wait_for_timeout(800)
 
         if dry_run:
@@ -493,6 +502,7 @@ def inject_and_generate(page, shot_data, all_shots, config, dry_run=False, auto_
             return True
 
         # 4. 点击生成
+        initial_err_count = page.locator('flow-error-tile, .error-tile, [role="alert"]:has-text("failed")').count()
         gen_btn = page.locator('button:has-text("Generate"), button[aria-label*="Generate"], button.generate-button').first
         if gen_btn.is_visible() and gen_btn.is_enabled():
             print("🚀 正在触发云端视频生成...")
@@ -504,7 +514,7 @@ def inject_and_generate(page, shot_data, all_shots, config, dry_run=False, auto_
 
         # 5. 监听生成与下载
         if auto_download:
-            ok = wait_for_generation_complete(page, shot_id)
+            ok = wait_for_generation_complete(page, shot_id, timeout=300, initial_error_count=initial_err_count)
             if ok:
                 time.sleep(2)
                 # 尝试抓取视频 URL 或通过下载按钮下载
@@ -535,7 +545,7 @@ def inject_and_generate(page, shot_data, all_shots, config, dry_run=False, auto_
 
 def main():
     parser = argparse.ArgumentParser(description="Google Flow Chrome CDP 中华美食短视频自动化控制器 (V2 动态版)")
-    parser.add_argument("--config", type=str, default=DEFAULT_CONFIG_PATH, help="美食视频分镜配置文件路径 (JSON)")
+    parser.add_argument("--config", type=str, default=None, help="美食视频分镜配置文件路径 (JSON)")
     parser.add_argument("--shot", type=int, help="指定生成单个镜头 (1~N)")
     parser.add_argument("--from-shot", type=int, default=1, help="从指定镜头开始往后连续生成")
     parser.add_argument("--all", action="store_true", help="连续批量连环提交并自动继承下载所有规划分镜")
@@ -545,7 +555,17 @@ def main():
     parser.add_argument("--port", type=int, default=9222, help="Chrome 远程调试端口，默认 9222")
     args = parser.parse_args()
 
-    config, resolved_config_path = load_food_config(args.config)
+    target_cfg = args.config
+    if not target_cfg:
+        examples_dir = os.path.join(WORKSPACE_ROOT, "examples")
+        if os.path.exists(examples_dir):
+            jsons = sorted([f for f in os.listdir(examples_dir) if f.endswith(".json") and not f.startswith(".")])
+            if jsons:
+                target_cfg = os.path.join(examples_dir, jsons[0])
+        if not target_cfg:
+            print("❌ 错误: 未指定 --config 且 examples 目录中没有可用的配置文件！")
+            return
+    config, resolved_config_path = load_food_config(target_cfg)
     food_title = config["food_title"]
     project_id = config["project_id"]
     character_name = config["character"].get("女主姓名", "女主")
