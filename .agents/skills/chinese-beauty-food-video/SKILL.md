@@ -216,8 +216,8 @@ FINAL VIDEO
   - 27–37s：24～30 字（真实品尝体验，咀嚼微停顿后直视镜头点评）
   - 37–45s：18～24 字（记忆金句与自信收尾，从容收尾）
 
-### 8.2 台词先于视频生成与唇形匹配
-完整第一人称台词 ➔ TTS 试读或实录 ➔ 获取精确音频波形与时长 ➔ 纯中文提示词中注入对镜头说话指令 ➔ 剪映智能对口型合流。
+### 8.2 台词注入与 Veo 原生音画一体生成
+完整第一人称台词 ➔ 纯中文提示词中注入直视镜头说话指令 ➔ 末尾注入专属母语发音约束段 ➔ Veo 原生音画一体直出（母语台词+精准唇动+环境拟音一站式生成） ➔ 剪映自动化排布字幕与成片。
 
 ### 8.3 台词风格与去 AI 腔
 台词应像一个真的吃过、懂一点、表达自然的真人食客，而不是广告播音腔或连珠炮 AI 金句。
@@ -318,25 +318,26 @@ Correct Mandarin lexical tones, tone changes, sentence rhythm, pauses, and empha
 
 ---
 
-## 13. Stage 9 & 10：声音设计与方案 B 剪映智能对口型合流管线 (彻底消灭洋腔)
+## 13. Stage 9 & 10：Veo 原生音画一体直出与后期成片管线 (零外挂 lipsync)
 
-> [!CAUTION]
-> **为什么 Veo 视频会有洋腔/听不懂？**
-> Veo 是画面扩散模型而非中文语音模型，当提示词要求说话时，Veo 原生伴生音频只能幻觉出带欧美口音的伪中文乱语。
-> **根本解法**：
-> 1. Veo 仅负责生成高质量唇动与面部微表情画面；
-> 2. 导出剪映时将视频轨音量强制设为 0（静音），彻底消除洋腔假杂音；
-> 3. 台词语音由中国母语专业音色库（剪映 Pro 原生音色 / Edge-TTS）生成；
-> 4. 剪映 Pro 中右键一键「智能对口型」，音画唇形 100% 精准咬字对齐！
+> [!TIP]
+> **Veo 原生音画一体直出的底层实现：**
+> 1. **人物与声音强绑定**：在 Flow 中通过 `@女主姓名` 绑定专属人物卡（Character Chip），锁死出镜面貌与声线；
+> 2. **母语发音专属约束段**：在说话分镜提示词最后另起独立段落追加：
+>    ```text
+>    Correct Mandarin lexical tones, tone changes, sentence rhythm, pauses, and emphasis. Her speech must sound natively Chinese, not like a foreigner speaking Chinese. Do not translate or alter the Chinese dialogue. No English speech.
+>    ```
+> 3. **一站式直出**：Veo 直接生成标准母语普通话发音、地道语调重音、生动面部唇动以及现场市井环境拟音（铁板滋啦、灶台热汤、夜市人声），音画完美契合；
+> 4. **完全摒弃二次对口型**：彻底无需 Wav2Lip 或剪映「智能对口型」等任何外挂工具！
 
-1. **第一人称配音生成**：采用中国母语声学模型生成每镜独立台词音频，获取精确波形时长；
-2. **方案 B 剪映自动化一键合流 (`export_to_jianying.py`)**：
+1. **视频主轨保留原生原声**：视频轨强制保留 Veo 原生音频（`volume=1.0`），包含清晰台词干音与市井环境声；
+2. **剪映自动化一键合流 (`export_to_jianying.py`)**：
    - 自动生成 9:16 (1080x1920) 剪映 Pro 工程草稿；
-   - 自动化多轨合流：将视频片段放入 `MainVideo` 轨（强制静音），台词音频放入 `SpokenVoice` 轨，精准字幕放入 `Subtitles` 轨；
-   - 在剪映 Pro 中选中视频片段，右键点击**「智能对口型」**，调用剪映官方中文唇形同步引擎，实现 100% 音画唇动精准对齐；
-3. **声音分层架构**：`SpokenVoice (100%)` > `Food SFX (30~60%)` > `Ambient (10~30%)` > `BGM (8~20%)`；
-4. **BGM 智能闪避**：台词出现时 BGM 自动下潜 ducking，品尝咀嚼瞬间留白突出真实 ASMR；
-5. **精确字幕对齐**：字幕时间轴完全基于台词音频波形生成，居中靠底安全区，白字黑描边。
+   - 自动化排布：将视频片段放入 `MainVideo` 轨（保留原生音画），大字字幕精准放入 `Subtitles` 轨；
+   - 无需进行任何二次配音或对口型操作，打开剪映即可直接预览完整音画；
+3. **声音分层架构**：`Veo Native Speech & SFX (100%)` > `Background Music BGM (10~18%)`；
+4. **BGM 智能垫乐**：可根据需要在剪映背景音乐轨微垫一首国风轻音乐，绝不压过原生中文对白；
+5. **精确字幕对齐**：大字字幕时间轴按分镜时序毫秒级对齐，居中靠底安全区，白字黑描边。
 
 ---
 
@@ -347,7 +348,7 @@ Correct Mandarin lexical tones, tone changes, sentence rhythm, pauses, and empha
 - **Food QA**：食材、配方、吃法真实准确，无 AI 塑料感；
 - **Hand QA**：手指数量正常，筷子/餐具接触真实；
 - **Narrative QA**：删掉美女后仍是一条优质的美食视频；
-- **Audio QA**：发音清晰、无错别字、BGM 不压人声。
+- **Audio QA**：发音地道清晰、无洋腔、无错别字、唇动自然贴合。
 
 **局部重试机制**：哪个镜头不合格就仅重生成该特定镜头，绝不因为一个镜头的瑕疵重做整条视频。
 
@@ -365,12 +366,12 @@ Correct Mandarin lexical tones, tone changes, sentence rhythm, pauses, and empha
 # 1. 动态生成项目立项与 100% 纯中文分镜配置 (例: 武汉热干面)
 python3 .agents/skills/chinese-beauty-food-video/scripts/food_project_factory.py --food "热干面" --city "武汉" --character "沈昭"
 
-# 2. 生成指定分镜视频 (例: Shot 1 黄金钩子)
+# 2. 调度 Chrome 控制器生成指定分镜视频 (例: Shot 1 黄金钩子)
 python3 .agents/skills/chinese-beauty-food-video/scripts/flow_cdp_controller.py --config examples/热干面_v2_45s.json --shot 1
 
-# 3. 方案 B 剪映自动化一键导出 (生成 9:16 竖屏草稿并挂载音轨字幕，支持官方智能对口型)
+# 3. 剪映自动化一键导出 (生成 9:16 竖屏草稿，保留原生音画并精确对齐字幕)
 python3 .agents/skills/chinese-beauty-food-video/scripts/export_to_jianying.py --config examples/热干面_v2_45s.json
 
-# 4. 本地直接合成管线 (备选独立管线: 裁切死帧 + 平滑叠化 + 真人配音 + 闪避BGM + 竖屏大字)
+# 4. 本地直接合成管线 (备选独立管线: 裁切死帧 + 平滑叠化 + 原生音画 + 垫乐BGM + 竖屏大字)
 python3 .agents/skills/chinese-beauty-food-video/scripts/assemble_food_video.py --config examples/热干面_v2_45s.json
 ```

@@ -2,10 +2,9 @@
 """
 剪映 Pro 竖屏短视频自动化草稿导出管线 (JianYing Pro Draft Export Pipeline)
 - 9:16 竖屏 (1080x1920) 电影级画幅初始化；
-- 自动化多轨编排：视频轨 (MainVideo) + 女主第一人称台词人声轨 (SpokenVoice) + 字幕轨 (Subtitles) + 背景音乐轨 (BGM)；
-- 支持 edge-tts 批量合成每镜女主专属音色干音并按时序精确放置；
+- 自动化多轨编排：主视频轨 (MainVideo，保留 Veo 原生母语对白与环境拟音 volume=1.0) + 字幕轨 (Subtitles) + 可选背景音乐轨 (BGM)；
 - 生成符合剪映 v5.9+ 标准的 draft_info.json、draft_meta_info.json 与素材自包含体系；
-- 无缝对接剪映官方「智能对口型」引擎，提供标准化操作 SOP。
+- 零外挂 lipsync 负担，开箱即用直接预览与导出。
 """
 
 import os
@@ -100,8 +99,8 @@ def get_audio_duration_seconds(audio_path: str) -> float:
         pass
     return 3.0
 
-def export_project_to_jianying(config_path: str, custom_draft_name: str = None, custom_drafts_root: str = None, synthesize_tts: bool = True):
-    """主导出函数：解析项目配置并生成剪映工程"""
+def export_project_to_jianying(config_path: str, custom_draft_name: str = None, custom_drafts_root: str = None, synthesize_tts: bool = False):
+    """主导出函数：解析项目配置并生成剪映工程 (默认使用 Veo 原生音画一体)"""
     if not os.path.isabs(config_path):
         config_path = os.path.normpath(os.path.join(WORKSPACE_ROOT, config_path))
 
@@ -154,27 +153,26 @@ def export_project_to_jianying(config_path: str, custom_draft_name: str = None, 
         video_filename = f"{project_id}_shot{shot_id}.mp4"
         video_path = os.path.join(WORKSPACE_ROOT, "tmp", "videos", video_filename)
         
-        # 1. 添加视频片段到主视频轨 (强制 volume=0.0 静音，彻底消除 Veo 原生假英文/洋腔杂音)
+        # 1. 添加视频片段到主视频轨 (保留 Veo 原生音画一体直出音频，含地道母语对白与市井环境拟音)
         if os.path.exists(video_path):
             project.add_media_safe(
                 video_path,
                 start_time=f"{current_timeline_time:.3f}s",
                 duration=f"{duration:.3f}s",
                 track_name="MainVideo",
-                volume=0.0
+                volume=1.0
             )
-            print(f"  ✅ [Shot {shot_id}] 已导入实拍视频 (已强制静音消除洋腔): {video_filename} ({duration:.1f}s)")
+            print(f"  ✅ [Shot {shot_id}] 已导入实拍视频 (保留 Veo 原生音画与母语对白): {video_filename} ({duration:.1f}s)")
         else:
-            print(f"  ℹ️ [Shot {shot_id}] 视频文件尚未生成，已在时间轴预留 {duration:.1f}s 槽位 (预设静音)")
+            print(f"  ℹ️ [Shot {shot_id}] 视频文件尚未生成，已在时间轴预留 {duration:.1f}s 槽位")
 
-        # 2. 合成并导入女主第一人称台词配音到音频轨
+        # 2. 若指定了 synthesize_tts 备用模式，合成并导入女主台词配音轨 (默认推荐完全使用 Veo 原生发音)
         if dialogue and synthesize_tts:
             audio_path = os.path.join(audio_dir, f"shot{shot_id}_dialogue.mp3")
             if not os.path.exists(audio_path):
                 audio_path = asyncio.run(synthesize_shot_audio(dialogue, voice_name, rate, pitch, audio_path))
             
             audio_dur = get_audio_duration_seconds(audio_path)
-            # 音频起音留白 0.15 秒，更显自然呼吸感
             audio_start = current_timeline_time + 0.15
             project.add_media_safe(
                 audio_path,
@@ -182,12 +180,12 @@ def export_project_to_jianying(config_path: str, custom_draft_name: str = None, 
                 duration=f"{audio_dur:.3f}s",
                 track_name="SpokenVoice"
             )
-            print(f"  🎙️ [Shot {shot_id}] 已导入台词音频: {os.path.basename(audio_path)} ({audio_dur:.2f}s)")
+            print(f"  🎙️ [Shot {shot_id}] [备用音轨] 已导入台词配音: {os.path.basename(audio_path)} ({audio_dur:.2f}s)")
 
         # 3. 添加字幕到字幕轨 (居中靠底安全区，白字黑描边)
         if dialogue:
             sub_start = current_timeline_time + 0.15
-            # 字幕时长与音频相当或略长
+            # 字幕时长与分镜相当
             sub_dur = min(duration - 0.3, max(2.5, len(dialogue) * 0.22))
             project.add_text_simple(
                 text=dialogue,
@@ -209,16 +207,16 @@ def export_project_to_jianying(config_path: str, custom_draft_name: str = None, 
     print(f"📌 草稿工程名称: {project.name}")
     print(f"📂 本地草稿路径: {draft_dir}")
     print(f"⏱️ 视频总时长:   {current_timeline_time:.1f} 秒 (9:16 竖屏 1080x1920)")
-    print(f"👸 出镜女主声音: {char_name} ({voice_name})")
+    print(f"👸 出镜女主:     {char_name}")
+    print(f"🔊 音画模式:     Veo 原生音画一体直出 (母语对白+现场环境音，零外挂 lipsync)")
     print("-" * 70)
-    print("👉 剪映官方【智能对口型】一键合流操作指南 (SOP):")
+    print("👉 剪映 Pro 后期成片操作指南 (SOP):")
     print("  1. 打开「剪映 Pro」桌面客户端；")
-    print(f"  2. 在草稿列表中，直接点击打开新建的草稿「{project.name}」；")
-    print("  3. 此时 9:16 视频轨、女主口播台词轨与字幕轨已按 6 镜时序排布完毕；")
-    print("  4. 选中时间轴上女主出镜的分镜视频片段；")
-    print("  5. 鼠标右键点击该视频片段，选择「智能对口型」（或点击右侧面板「音频」->「智能对口型」）；")
-    print("  6. 剪映官方引擎将全自动根据下方台词音频，将女主唇形与中文发音 100% 同步对齐；")
-    print("  7. 一键点击右上角「导出」，即获电影级高清成品！")
+    print(f"  2. 在草稿列表中，直接点击打开新建草稿「{project.name}」；")
+    print("  3. 9:16 视频轨已保留 Veo 原生中文对白与现场环境音效，大字字幕轨已精确对齐；")
+    print("  4. 无需做任何复杂的 lipsync 或二次对口型，音画自然同步；")
+    print("  5. 可根据需要在背景音乐轨轻微垫上一首国风市井轻音乐（音量建议 15%）；")
+    print("  6. 点击右上角「导出」，即获电影级高清成品！")
     print("=" * 70 + "\n")
 
     return {
@@ -233,14 +231,14 @@ def main():
     parser.add_argument("--config", type=str, required=True, help="项目 JSON 配置文件路径")
     parser.add_argument("--name", type=str, default=None, help="自定义剪映草稿名称")
     parser.add_argument("--drafts-root", type=str, default=None, help="自定义剪映草稿根目录")
-    parser.add_argument("--no-tts", action="store_true", help="跳过 TTS 语音生成")
+    parser.add_argument("--with-tts", action="store_true", help="启用辅助 TTS 语音轨 (默认关闭，完全使用 Veo 原生音画一体)")
     args = parser.parse_args()
 
     export_project_to_jianying(
         config_path=args.config,
         custom_draft_name=args.name,
         custom_drafts_root=args.drafts_root,
-        synthesize_tts=not args.no_tts
+        synthesize_tts=args.with_tts
     )
 
 if __name__ == "__main__":
