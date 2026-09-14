@@ -448,6 +448,161 @@
       "wardrobe_anchor_cn": "身穿香槟金极简真丝V领吊带长裙，慵懒蜷坐在落地窗边的浅色单人沙发椅上，自然黑褐色中长微卷发微拂肩头，五官清秀纯欲，眼神柔和清澈带有一丝慵懒迷离，晨光洒在光洁的锁骨与肩颈线条上，呈现出高级慵懒的私享品味。",
       "speaking_style_cn": "直接抬眸直视摄像机镜头，眼神自信灵动，嘴唇自然饱满开合，清晰说出地道中文台词，口型动作生动真实，面部微表情随说话起伏",
       "negative_prompt_cn": "严禁更换服装，严禁改变发型，严禁散发，严禁非指定衣物，严禁洋人面孔，严禁畸变手指，严禁多余手指，严禁闭嘴说话，严禁假唱木偶嘴，严禁卡通动漫，严禁模糊低清"
+    },
+    {
+      "character_id": "eileen_beijing_blonde",
+      "name": "艾琳",
+      "photo_path": "assets/character_master/eileen_master.jpg",
+      "style_label": "京腔金发直爽大妞风",
+      "visual_traits": "20岁白人高挑美女，天然冷白皮，深邃冰蓝色大眼睛，波浪浅金色长卷发，高挺鼻梁，温暖灿烂笑容，身穿米白羊绒落肩毛衣配浅蓝修身牛仔裤，大方松弛市井风范。",
+      "personality": "在北京胡同长大，开口地道北京话，豪爽爽朗、不拘小节、自来熟。热衷涮羊肉、爆肚、炙子烤肉，一口糖蒜一口肉，反差萌拉满。",
+      "voice_persona": {
+        "voice_name": "native_mandarin_beijing",
+        "style": "cheerful",
+        "pitch": "+0Hz",
+        "rate": "+10%",
+        "tone_description": "地道北京腔、咬字干脆利落带儿化音、充满北方姑娘的豪爽透亮与感染力。"
+      },
+      "expression_style": "接地气、京腔大白话、毫不做作。口癖与句式：\"得嘞！这一口下去倍儿香\"、\"在胡同里长大，就馋这口滚烫的麻酱\"、\"少废话，老板再加两盘手切热鲜羊！\"。",
+      "best_match_cuisines": [
+        "老北京铜锅涮肉",
+        "炙子烤肉",
+        "老北京炸酱面",
+        "门框胡同爆肚",
+        "卤煮火烧"
+      ],
+      "hair_face_anchor_en": "20-year-old Caucasian beauty Eileen, radiant fair porcelain skin, captivating deep ice-blue eyes, wavy sunlit natural blonde hair framing face, refined elegant jawline, warm friendly confident smile",
+      "wardrobe_anchor_en": "wearing an off-white soft cashmere knit sweater and light-blue slim denim jeans",
+      "speaking_style_en": "looking directly into the lens, actively speaking in fluent native conversational Mandarin with lively confident lip movement and bright expressive smile",
+      "negative_prompt_en": "no outfit change, no hairstyle change, no dark hair, no distorted hands, no blurry, no low quality, no morphing, no western accent",
+      "hair_face_anchor_cn": "20岁白人美女艾琳，天然冷白皮，深邃冰蓝色大眼睛，波浪浅金色长卷发，高挺鼻梁，温暖灿烂笑容",
+      "wardrobe_anchor_cn": "身穿米白羊绒落肩毛衣配浅蓝修身牛仔裤，大方松弛市井风范。",
+      "speaking_style_cn": "直接抬眸直视摄像机镜头，眼神自信灵动，嘴唇自然饱满开合，清晰说出地道中文台词，口型动作生动真实，面部微表情随说话起伏",
+      "negative_prompt_cn": "严禁更换服装，严禁改变发型，严禁深色头发，严禁非指定衣物，严禁畸变手指，严禁多余手指，严禁闭嘴说话，严禁假唱木偶嘴，严禁卡通动漫，严禁模糊低清"
+    },
+    {
+      "character_id": "sophia_hangzhou_sweet",
+      "name": "索菲娅",
+      "photo_path": "assets/character_master/sophia_master.jpg",
+      "style_label": "法式优雅吴侬软语甜妹",
+      "visual_traits": "20岁法国高颜值白人少女，白皙粉嫩皮肤，温柔榛绿色眼眸，金棕色微卷及肩发配法式空气刘海，身穿法式方领复古碎花泡泡袖修身连衣裙与精致珍珠项链。",
+      "personality": "从小在杭州定居，说话温润软糯，举手投足优雅从容，对江南早茶点心、东坡肉、龙井虾仁如数家珍。",
+      "voice_persona": {
+        "voice_name": "native_mandarin_jiangnan",
+        "style": "gentle",
+        "pitch": "+2Hz",
+        "rate": "+5%",
+        "tone_description": "轻柔温润、吴侬软语般的南方母语声线，尾音轻盈带笑意，甜而不腻。"
+      },
+      "expression_style": "温柔细腻、甜美治愈、极具代入感。口癖与句式：\"天呐，这口东坡肉软烂得入口即化\"、\"江南的春天，全藏在这一汪清甜鲜美里了\"、\"好吃到想在断桥边转圈圈\"。",
+      "best_match_cuisines": [
+        "杭州东坡肉",
+        "苏式生煎",
+        "西湖醋鱼",
+        "江南蟹粉小笼",
+        "桂花定胜糕"
+      ],
+      "hair_face_anchor_en": "20-year-old Caucasian French beauty Sophia, fair rosy porcelain skin, gentle captivating hazel-green eyes, soft honey-brown wavy hair with wispy French bangs, sweet gentle smile",
+      "wardrobe_anchor_en": "wearing a vintage French square-neck floral print puff-sleeve dress and delicate tiny pearl pendant necklace",
+      "speaking_style_en": "looking directly into the lens, actively speaking in fluent native conversational Mandarin with gentle charming lip movement and graceful warm smile",
+      "negative_prompt_en": "no outfit change, no hairstyle change, no dark hair, no distorted hands, no blurry, no low quality, no morphing",
+      "hair_face_anchor_cn": "20岁法国白人少女索菲娅，白皙粉嫩皮肤，温柔榛绿色眼眸，金棕色微卷及肩发配法式空气刘海",
+      "wardrobe_anchor_cn": "身穿法式方领复古碎花泡泡袖修身连衣裙与精致珍珠项链，优雅从容水乡气质。",
+      "speaking_style_cn": "直接抬眸直视摄像机镜头，眼神自信灵动，嘴唇自然饱满开合，清晰说出地道中文台词，口型动作生动真实，面部微表情随说话起伏",
+      "negative_prompt_cn": "严禁更换服装，严禁改变发型，严禁深色头发，严禁非指定衣物，严禁畸变手指，严禁多余手指，严禁闭嘴说话，严禁假唱木偶嘴，严禁卡通动漫，严禁模糊低清"
+    },
+    {
+      "character_id": "natasha_sichuan_spicy",
+      "name": "娜塔莎",
+      "photo_path": "assets/character_master/natasha_master.jpg",
+      "style_label": "酷飒超模重辣火锅御姐",
+      "visual_traits": "20岁东欧白人御姐，174cm超模身材，冷白皮，灰绿色锐利猫眼，紧束铂金高马尾，高颧骨精致下颌线，身穿黑色露肩修身挂脖短背心配银色细锁骨链。",
+      "personality": "在成都读大学，吃火锅必点特辣原汤，拿筷子烫鲜毛肚七上八下极其专业，外冷内热，一吃到极致重辣眼神瞬间放光。",
+      "voice_persona": {
+        "voice_name": "native_mandarin_sichuan",
+        "style": "cool_confident",
+        "pitch": "-1Hz",
+        "rate": "+12%",
+        "tone_description": "微哑带磁性的高冷御姐母语原声，语速果断有力，点评火辣利落。"
+      },
+      "expression_style": "冷艳酷飒、一针见血、江湖气十足。口癖与句式：\"在川渝吃微辣是对老板的羞辱\"、\"七上八下刚好，这口毛肚脆得弹牙\"、\"老板儿，再加两份特辣老肉片！\"。",
+      "best_match_cuisines": [
+        "重庆老火锅",
+        "成都串串香",
+        "自贡冷吃牛肉",
+        "乐山钵钵鸡",
+        "宜宾燃面"
+      ],
+      "hair_face_anchor_en": "20-year-old Caucasian Eastern European beauty Natasha, tall model stature, fair alabaster porcelain skin, sharp sculpted jawline, striking grey-green piercing eyes, sleek high platinum-blonde ponytail",
+      "wardrobe_anchor_en": "wearing a black fitted halter-neck cropped top and minimalist silver chain necklace",
+      "speaking_style_en": "looking directly into the lens, actively speaking in fluent native conversational Mandarin with sharp confident mouth articulation and intense alluring eye contact",
+      "negative_prompt_en": "no outfit change, no hairstyle change, no dark hair, no loose hair, no distorted hands, no blurry, no low quality, no morphing",
+      "hair_face_anchor_cn": "20岁东欧白人御姐娜塔莎，冷白皮，灰绿色锐利猫眼，紧束铂金高马尾，高颧骨精致下颌线",
+      "wardrobe_anchor_cn": "身穿黑色露肩修身挂脖短背心配银色细锁骨链，身材修长高挑健美。",
+      "speaking_style_cn": "直接抬眸直视摄像机镜头，眼神自信灵动，嘴唇自然饱满开合，清晰说出地道中文台词，口型动作生动真实，面部微表情随说话起伏",
+      "negative_prompt_cn": "严禁更换服装，严禁改变发型，严禁散发，严禁非指定衣物，严禁畸变手指，严禁多余手指，严禁闭嘴说话，严禁假唱木偶嘴，严禁卡通动漫，严禁模糊低清"
+    },
+    {
+      "character_id": "lilian_guangdong_foodie",
+      "name": "莉莉安",
+      "photo_path": "assets/character_master/lilian_master.jpg",
+      "style_label": "地中海阳光市井夜市辣妹",
+      "visual_traits": "20岁意大利裔白人美女，健康微光泽白皙皮肤，浓密焦糖色波浪卷发，明亮琥珀色大眼睛，露齿迷人梨涡笑，身穿复古樱桃红无袖紧身短吊带配金色小圆耳环。",
+      "personality": "性格热烈开朗、自来熟，最爱坐在大排档塑料矮凳上嗦生蚝、啃小龙虾、吃淄博烤串，笑声极其治愈。",
+      "voice_persona": {
+        "voice_name": "native_mandarin_energetic",
+        "style": "cheerful",
+        "pitch": "+3Hz",
+        "rate": "+15%",
+        "tone_description": "元气清澈、欢快如同蹦豆般的阳光少女母语声线，极富穿透力与现场烟火感染力。"
+      },
+      "expression_style": "奔放热情、大开大合、快乐大吃货。口癖与句式：\"哇塞！这炭火香气一闻就停不下来\"、\"大排档就要这么大口吃肉才过瘾！\"、\"服务员，再来两瓶冰镇气泡饮！\"。",
+      "best_match_cuisines": [
+        "淄博烧烤",
+        "潮汕牛肉火锅",
+        "广式生蚝大排档",
+        "麻辣小龙虾",
+        "柳州螺蛳粉"
+      ],
+      "hair_face_anchor_en": "20-year-old Caucasian Italian beauty Lilian, sun-kissed radiant fair skin, cascading caramel-brown wavy curls, warm amber-brown eyes, vibrant radiant smile with subtle dimples",
+      "wardrobe_anchor_en": "wearing a vibrant retro cherry-red sleeveless fitted cropped tank top and dainty gold hoop earrings",
+      "speaking_style_en": "looking directly into the lens, actively speaking in fluent native conversational Mandarin with lively vibrant mouth movement and enthusiastic joyful expression",
+      "negative_prompt_en": "no outfit change, no hairstyle change, no dark hair, no straight hair, no distorted hands, no blurry, no low quality, no morphing",
+      "hair_face_anchor_cn": "20岁意大利裔白人美女莉莉安，健康微光泽白皙皮肤，浓密焦糖色波浪卷发，明亮琥珀色大眼睛，露齿迷人梨涡笑",
+      "wardrobe_anchor_cn": "身穿复古樱桃红无袖紧身短吊带配金色小圆耳环，阳光活力大排档风范。",
+      "speaking_style_cn": "直接抬眸直视摄像机镜头，眼神自信灵动，嘴唇自然饱满开合，清晰说出地道中文台词，口型动作生动真实，面部微表情随说话起伏",
+      "negative_prompt_cn": "严禁更换服装，严禁改变发型，严禁直发，严禁非指定衣物，严禁畸变手指，严禁多余手指，严禁闭嘴说话，严禁假唱木偶嘴，严禁卡通动漫，严禁模糊低清"
+    },
+    {
+      "character_id": "chloe_xibei_scholar",
+      "name": "克洛伊",
+      "photo_path": "assets/character_master/chloe_master.jpg",
+      "style_label": "英伦知性纯净学霸碳水老饕",
+      "visual_traits": "20岁英伦白人美女，自然白瓷肌，细金丝轻奢圆眼镜，浅矢车菊蓝纯净眼眸，香槟金低盘发微碎发，身穿米白翻领棉质衬衫叠穿深蓝学院风针织V领马甲。",
+      "personality": "深度痴迷中华碳水与西北牛羊肉文化，掰馍手势比老西安还标准，说话逻辑严密字正腔圆，文雅知性。",
+      "voice_persona": {
+        "voice_name": "native_mandarin_scholar",
+        "style": "calm",
+        "pitch": "+0Hz",
+        "rate": "+0%",
+        "tone_description": "字正腔圆、温和从容、娓娓道来的知性电台级母语声线，气息平稳舒服。"
+      },
+      "expression_style": "考据派、条理清晰、优雅娓娓道来。口癖与句式：\"掰馍一定要黄豆大小，这才是汤汁浸透的秘诀\"、\"这碗牛肉面，讲究的就是一清二白三红四绿\"、\"看似朴素的面食，藏着最极致的工序火候\"。",
+      "best_match_cuisines": [
+        "西安牛羊肉泡馍",
+        "兰州牛肉拉面",
+        "老潼关肉夹馍",
+        "新疆手抓羊肉",
+        "山西刀削面"
+      ],
+      "hair_face_anchor_en": "20-year-old Caucasian British beauty Chloe, luminous porcelain skin, intelligent cornflower-blue eyes, delicate round gold-wire spectacles, neat champagne-blonde hair tied in low chignon bun",
+      "wardrobe_anchor_en": "wearing a crisp cream collared shirt layered under a navy-blue preppy knit V-neck vest",
+      "speaking_style_en": "looking directly into the lens, actively speaking in fluent native conversational Mandarin with articulate composed lip articulation and thoughtful cultured gaze",
+      "negative_prompt_en": "no outfit change, no hairstyle change, no removing glasses, no dark hair, no distorted hands, no blurry, no low quality, no morphing",
+      "hair_face_anchor_cn": "20岁英伦白人美女克洛伊，自然白瓷肌，细金丝轻奢圆眼镜，浅矢车菊蓝纯净眼眸，香槟金低盘发微碎发",
+      "wardrobe_anchor_cn": "身穿米白翻领棉质衬衫叠穿深蓝学院风针织V领马甲，英伦知性学霸气息。",
+      "speaking_style_cn": "直接抬眸直视摄像机镜头，眼神自信灵动，嘴唇自然饱满开合，清晰说出地道中文台词，口型动作生动真实，面部微表情随说话起伏",
+      "negative_prompt_cn": "严禁更换服装，严禁改变发型，严禁脱除眼镜，严禁深色头发，严禁非指定衣物，严禁畸变手指，严禁多余手指，严禁闭嘴说话，严禁假唱木偶嘴，严禁卡通动漫，严禁模糊低清"
     }
   ]
 }

@@ -285,12 +285,17 @@ elif environment_is_focus:
 
 ---
 
-## 12. Stage 8：100% 纯中文电影级分镜提示词构建 (Pure Chinese Shot Prompt Builder)
+## 12. Stage 8：电影级分镜提示词与母语发音约束构建 (Shot Prompt Builder)
 
 > [!IMPORTANT]
-> **视频生成提示词必须为 100% 纯中文，严禁英文机位词与洋腔提示词！**
-> 生成提示词统一为 `prompt` 与 `prompt_cn`，严格遵循纯中文六段式电影级公式搭建：
+> **视频生成提示词必须为地道中文叙事，严禁英文机位词与洋腔！**
+> 生成提示词统一为 `prompt` 与 `prompt_cn`，主体结构遵循电影级公式：
 > `【1. 景别运镜】 + 【2. 锁定主角固定发型与服装】 + 【3. 面对镜头亲口说话口型生动自然】 + 【4. 食物微距诱人细节与吃法动作】 + 【5. 市井暖色烟火气】 + 【6. 严苛中文负向约束】`
+> 
+> **并在提示词最后单独追加一个独立段落（Mandatory Trailing Speech Paragraph）：**
+> ```text
+> Correct Mandarin lexical tones, tone changes, sentence rhythm, pauses, and emphasis. Her speech must sound natively Chinese, not like a foreigner speaking Chinese. Do not translate or alter the Chinese dialogue. No English speech.
+> ```
 
 ### 12.1 女主对镜头说话口型控制指令 (必须注入出镜说话分镜)
 - **主述抓人指令 (Shot 1, Shot 2)**：
@@ -300,7 +305,13 @@ elif environment_is_focus:
 - **收尾金句指令 (Shot 6)**：
   `“女主品尝咽下美食后，坦荡从容直视摄像机镜头，眼神自信迷人，面带自然灿烂的微笑，嘴唇清晰自然开合，亲口说出记忆金句中文台词，语毕从容优雅轻微点头致意。”`
 
-### 12.2 硬性物理规则：
+### 12.2 末尾独立段落：母语发音与对白约束段 (Speech Conditioning Paragraph)
+在给 Veo 等模型的说话分镜提示词最后，必须单独另起一段加入以下精确约束段，用以硬性规范汉语声调、变调、停顿节奏与强调重音，彻底杜绝外国口音与错乱翻译：
+```text
+Correct Mandarin lexical tones, tone changes, sentence rhythm, pauses, and emphasis. Her speech must sound natively Chinese, not like a foreigner speaking Chinese. Do not translate or alter the Chinese dialogue. No English speech.
+```
+
+### 12.3 硬性物理规则：
 1. **一个镜头只设置一个主要核心动作**，复杂行为必须拆镜；
 2. **遵守物理真实性**：食物必须遵循真实重力、液体流动、真实尺寸与食材结构，严禁无故爆炸、喷射或拉丝；
 3. **表情克制真实**：品尝后微表情为“停顿半秒 ➔ 轻微惊喜 ➔ 继续咀嚼 ➔ 自然评价”，拒绝夸张网红大瞪眼。

@@ -25,10 +25,12 @@ FORBIDDEN_WORDS = [
 ]
 
 def check_english_pollution(text: str) -> list:
-    """检测是否含有英文长词或英文句子（允许合法的模型标号如 4K, 24fps 等）。"""
+    """检测是否含有英文长词或英文句子（允许合法的模型标号如 4K, 24fps 以及合规的母语语音约束段落）。"""
     if not isinstance(text, str):
         return []
-    cleaned = re.sub(r'\b(4K|24fps|fps|BGM|LUFS|ID|jpg|png|json|shot|shots|re_anchor|reanchor)\b', '', text, flags=re.IGNORECASE)
+    cleaned = re.sub(r'Correct Mandarin lexical tones.*?No English speech\.', '', text, flags=re.DOTALL | re.IGNORECASE)
+    cleaned = re.sub(r'Audio and speech conditioning:.*?night market ambiance\.', '', cleaned, flags=re.DOTALL | re.IGNORECASE)
+    cleaned = re.sub(r'\b(4K|24fps|fps|BGM|LUFS|ID|jpg|png|json|shot|shots|re_anchor|reanchor)\b', '', cleaned, flags=re.IGNORECASE)
     matches = re.findall(r'[a-zA-Z]{4,}', cleaned)
     return matches
 

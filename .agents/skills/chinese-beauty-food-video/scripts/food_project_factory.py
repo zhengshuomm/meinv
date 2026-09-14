@@ -537,6 +537,18 @@ def build_v3_storyboard(food_profile: dict, char: dict, hook: str, dialogue_data
         f"负向约束：{neg_prompt}。"
     )
 
+    VEO_SPEECH_CONDITIONING_PARAGRAPH = (
+        "Correct Mandarin lexical tones, tone changes, sentence rhythm, pauses, and emphasis. "
+        "Her speech must sound natively Chinese, not like a foreigner speaking Chinese. "
+        "Do not translate or alter the Chinese dialogue. No English speech."
+    )
+
+    # 给所有出镜说话分镜单独追加独立段落约束
+    shot1_prompt = f"{shot1_prompt}\n\n{VEO_SPEECH_CONDITIONING_PARAGRAPH}"
+    shot2_prompt = f"{shot2_prompt}\n\n{VEO_SPEECH_CONDITIONING_PARAGRAPH}"
+    shot5_prompt = f"{shot5_prompt}\n\n{VEO_SPEECH_CONDITIONING_PARAGRAPH}"
+    shot6_prompt = f"{shot6_prompt}\n\n{VEO_SPEECH_CONDITIONING_PARAGRAPH}"
+
     shots = [
         {
             "id": 1,

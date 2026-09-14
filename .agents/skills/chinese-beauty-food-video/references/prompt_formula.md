@@ -12,7 +12,7 @@
 
 ---
 
-## 一、纯中文六段式分镜提示词结构 (Six-Part Chinese Formula)
+## 一、纯中文六段式分镜提示词结构与末尾母语发音段 (Prompt Structure)
 
 ```text
 【1. 景别与电影级运镜】
@@ -21,6 +21,9 @@
 + 【4. 食物微距诱人细节、热气与地道吃法动作】
 + 【5. 市井暖色烟火气与真实光影氛围】
 + 【6. 严苛中文负向排斥约束】
+
++ 【末尾单独独立段落：Veo 母语发音与对白硬性约束 (Mandatory Trailing Speech Paragraph)】
+Correct Mandarin lexical tones, tone changes, sentence rhythm, pauses, and emphasis. Her speech must sound natively Chinese, not like a foreigner speaking Chinese. Do not translate or alter the Chinese dialogue. No English speech.
 ```
 
 ## 二、女主对镜头说话口型控制词库 (纯中文口播动作指令)
@@ -36,17 +39,21 @@
 
 ---
 
-## 三、标准六分镜纯中文示范 (Standard 6-Shot Storyboard)
+## 三、标准六分镜示范 (Standard 6-Shot Storyboard)
 
 以女主**姜黎**（阳光街头酷飒辣妹风）品尝**淄博烧烤**为例：
 
 ### Shot 1: 黄金 3 秒抓人钩子 (0-4s, 女主直视镜头亲口说)
 > **提示词 (CN)**:  
 > 中近景平滑向前微推镜头。画面主体人物五官面貌、发型与服装严格100%与角色定妆参考图完全一致：20岁中国美女姜黎，健康微光泽冷白皮，高束运动编发马尾，灵动自信目光，清晰紧致马甲线，身穿白色运动挂脖短背心配军绿色高腰工装长裤与复古运动鞋。女主手持刚出锅冒着浓白热气与火星的淄博炭火烤肉串面向镜头。女主直接抬眸直视摄像机镜头，眼神自信灵动，嘴唇自然饱满开合，清晰说出地道中文抓人台词，口型动作生动真实，面部微表情随说话自然起伏。肉串与镜头之间升腾起半透明白色蒸汽与诱人焦香，市井暖色温润光影，真实细腻皮肤质感，浅景深虚化背景，4K电影级超高清画质。负向约束：严禁更换服装，严禁改变发型，严禁散发，严禁非指定衣物，严禁洋人面孔，严禁畸变手指，严禁多余手指，严禁闭嘴说话，严禁假唱木偶嘴，严禁卡通动漫，严禁模糊低清。
+>
+> Correct Mandarin lexical tones, tone changes, sentence rhythm, pauses, and emphasis. Her speech must sound natively Chinese, not like a foreigner speaking Chinese. Do not translate or alter the Chinese dialogue. No English speech.
 
 ### Shot 2: 城市烟火气与环境交代 (4-10s, 女主面对镜头介绍)
 > **提示词 (CN)**:  
 > 电影感中景，平滑水平横摇慢移。画面主体人物容貌、发型与服装严格100%与参考图完全一致：20岁中国美女姜黎，高束运动编发马尾，身穿白色运动短背心与军绿色工装长裤。女主自然端坐在淄博市井烧烤大排档的餐桌前，桌上摆着双层独立小炭炉，女主直接抬眸直视摄像机镜头，神态从容亲和，嘴唇自然开合清晰说出中文台词，向观众介绍这家地道排档。背景中其他食客围炉畅聊，炭火盆里红炭微闪，升腾起层层白色青烟与热气。暖色调市井街头光影，丰富的空间层次景深，电影胶片质感。负向约束：严禁更换服装，严禁改变发型，严禁非指定衣物，严禁洋人面孔，严禁畸变手指，严禁模糊低清。
+>
+> Correct Mandarin lexical tones, tone changes, sentence rhythm, pauses, and emphasis. Her speech must sound natively Chinese, not like a foreigner speaking Chinese. Do not translate or alter the Chinese dialogue. No English speech.
 
 ### Shot 3: 最具辨识度的制作高潮 (10-18s, 微距制作全景)
 > **提示词 (CN)**:  
@@ -59,10 +66,14 @@
 ### Shot 5: 女主真实品尝与咀嚼后面对镜头点评 (27-37s, 微表情反差+对镜头说话)
 > **提示词 (CN)**:  
 > 中近景人像肖像镜头。画面主体人物容貌、发型与服装严格100%与参考图完全一致：20岁中国美女姜黎，高束运动编发马尾，身穿白色运动短背心。女主双手拿着卷好的烧烤面饼送入口中，大口咬下一角，自然真实咀嚼品尝，下颌与面颊肌肉自然律动。在焦香肉汁与甜脆小葱在口中爆发的瞬间微顿半秒，眼神瞬间放大，流露出被极致美味惊艳到的真实痛快神采与赞许点头。随后她直接抬眸直视摄像机镜头，嘴唇自然饱满开合，清晰说出地道中文点评台词，神情自信飒爽。柔和人像轮廓光，真实皮肤纹理与毛孔细节，浅景深。负向约束：严禁更换服装，严禁改变发型，严禁非指定衣物，严禁洋人面孔，严禁面部扭曲失真，严禁闭嘴说话，严禁假唱木偶嘴，严禁模糊低清。
+>
+> Correct Mandarin lexical tones, tone changes, sentence rhythm, pauses, and emphasis. Her speech must sound natively Chinese, not like a foreigner speaking Chinese. Do not translate or alter the Chinese dialogue. No English speech.
 
 ### Shot 6: 城市记忆从容收尾 (37-45s, 直视镜头亲口说金句台词)
 > **提示词 (CN)**:  
 > 电影感中近景固定机位。画面主体人物容貌、发型与服装严格100%与参考图完全一致：20岁中国美女姜黎，高束运动编发马尾，身穿白色运动短背心。品尝咽下美食后，女主坦荡从容直视摄像机镜头，眼神自信迷人，面带自然灿烂的微笑，嘴唇清晰自然开合，亲口说出淄博烧烤记忆金句中文台词，语毕从容优雅轻微点头致意。温馨温暖的夜市暖光氛围，柔和轮廓金光勾勒发丝与肩膀，电影母带级调色质感。负向约束：严禁更换服装，严禁改变发型，严禁非指定衣物，严禁洋人面孔，严禁闭嘴说话，严禁假唱木偶嘴，严禁模糊低清。
+>
+> Correct Mandarin lexical tones, tone changes, sentence rhythm, pauses, and emphasis. Her speech must sound natively Chinese, not like a foreigner speaking Chinese. Do not translate or alter the Chinese dialogue. No English speech.
 
 ---
 
